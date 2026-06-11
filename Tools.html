@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>帳務資料整理小工具</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+  background: #f0f2f5;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: #2c7be5;
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.header h1 { font-size: 17px; font-weight: 700; }
+.month-wrap { display: flex; align-items: center; gap: 8px; }
+.month-wrap label { font-size: 13px; opacity: 0.9; }
+.month-wrap input[type="month"] {
+  border: none; border-radius: 6px; padding: 5px 10px;
+  font-size: 13px; color: #333; background: white;
+}
+
+/* Container */
+.container { max-width: 860px; margin: 0 auto; padding: 18px 16px; }
+
+/* Step Tabs */
+.steps {
+  display: flex; margin-bottom: 18px; background: white;
+  border-radius: 10px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.step-btn {
+  flex: 1; padding: 13px 8px; border: none; background: white;
+  cursor: pointer; font-size: 13px; font-family: inherit; color: #999;
+  border-bottom: 3px solid transparent; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.step-btn.active { color: #2c7be5; border-bottom-color: #2c7be5; font-weight: 700; }
+.step-num {
+  width: 20px; height: 20px; border-radius: 50%; background: #e0e0e0;
+  color: #777; font-size: 11px; display: flex; align-items: center;
+  justify-content: center; font-weight: 700; flex-shrink: 0;
+}
+.step-btn.active .step-num { background: #2c7be5; color: white; }
+
+/* Card */
+.card {
+  background: white; border-radius: 10px; padding: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 14px;
+}
+.card h2 { font-size: 15px; margin-bottom: 12px; color: #444; }
+
+/* Form elements */
+textarea {
+  width: 100%; border: 1.5px solid #ddd; border-radius: 8px;
+  padding: 11px 12px; font-size: 14px; font-family: inherit;
+  resize: vertical; line-height: 1.7; color: #333;
+}
+textarea:focus { outline: none; border-color: #2c7be5; }
+
+input[type="text"], input[type="number"] {
+  border: 1px solid #ddd; border-radius: 5px;
+  padding: 4px 7px; font-size: 13px; font-family: inherit;
+}
+input:focus { outline: none; border-color: #2c7be5; }
+
+/* Buttons */
+.btn {
+  padding: 9px 18px; border-radius: 8px; border: none; font-size: 13px;
+  font-family: inherit; cursor: pointer; font-weight: 600; transition: all 0.2s;
+}
+.btn-primary { background: #2c7be5; color: white; }
+.btn-primary:hover { background: #1a6bcf; }
+.btn-success { background: #28a745; color: white; }
+.btn-success:hover { background: #218838; }
+.btn-outline { background: white; color: #2c7be5; border: 1.5px solid #2c7be5; }
+.btn-outline:hover { background: #f0f6ff; }
+.btn-danger { background: #dc3545; color: white; padding: 4px 9px; font-size: 12px; }
+.btn-danger:hover { background: #c82333; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+.action-bar {
+  display: flex; gap: 10px; margin-top: 14px;
+  flex-wrap: wrap; align-items: center;
+}
+
+/* Step 1 Table */
+.parse-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.parse-table th {
+  background: #f8f9fa; padding: 9px 8px; text-align: left;
+  font-weight: 600; color: #555; border-bottom: 2px solid #dee2e6;
+}
+.parse-table td { padding: 7px 8px; border-bottom: 1px solid #f2f2f2; vertical-align: middle; }
+.parse-table input[type="text"] { width: 100%; }
+.parse-table input[type="number"] { width: 80px; }
+.parse-table .last5-input { width: 75px; font-family: monospace; letter-spacing: 1px; }
+.parse-table .seq-cell { color: #bbb; font-size: 12px; width: 30px; }
+
+/* Step 2 Stats */
+.stats-bar { display: flex; gap: 10px; flex-wrap: wrap; }
+.stat-item {
+  text-align: center; flex: 1; min-width: 70px; padding: 12px 8px;
+  background: #f8f9fa; border-radius: 8px;
+}
+.stat-number { font-size: 22px; font-weight: 700; color: #2c7be5; }
+.stat-number.green { color: #28a745; }
+.stat-number.red { color: #dc3545; }
+.stat-label { font-size: 11px; color: #999; margin-top: 2px; }
+
+/* Step 2 Checklist */
+.member-row {
+  display: flex; align-items: center; padding: 11px 6px;
+  border-bottom: 1px solid #f2f2f2; gap: 10px; transition: background 0.15s;
+}
+.member-row:last-child { border-bottom: none; }
+.member-row.paid { background: #f0fff4; }
+.member-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: #28a745; flex-shrink: 0; }
+.member-info { flex: 1; min-width: 0; }
+.member-name { font-weight: 600; font-size: 15px; }
+.member-detail { font-size: 11px; color: #aaa; margin-top: 2px; }
+.right-inputs { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.amount-row { display: flex; align-items: center; gap: 5px; }
+.amount-label { font-size: 11px; color: #aaa; }
+.actual-amount-input { width: 85px; text-align: right; font-size: 13px; }
+.note-input { width: 120px; font-size: 12px; color: #666; }
+
+/* Step 3 Report */
+.report-box {
+  background: #1a1b2e; color: #d4d8f0; border-radius: 10px;
+  padding: 18px 20px; font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px; line-height: 1.85; white-space: pre-wrap; min-height: 200px;
+}
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  background: rgba(40,40,40,0.92); color: white; padding: 9px 20px;
+  border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; z-index: 9999; white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+
+/* Empty state */
+.empty-state { text-align: center; color: #ccc; padding: 36px; font-size: 14px; }
+
+.hint { font-size: 12px; color: #888; }
+.hidden { display: none !important; }
+
+/* Filter buttons */
+.filter-bar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.filter-btn {
+  padding: 5px 14px; border-radius: 20px; border: 1.5px solid #ddd;
+  background: white; font-size: 12px; cursor: pointer; font-family: inherit; color: #666;
+  transition: all 0.2s;
+}
+.filter-btn.active { background: #2c7be5; color: white; border-color: #2c7be5; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>帳務資料整理小工具</h1>
+  <div class="month-wrap">
+    <label>月份：</label>
+    <input type="month" id="monthInput">
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Step Tabs -->
+  <div class="steps">
+    <button class="step-btn active" onclick="switchStep(1)" id="stepBtn1">
+      <span class="step-num">1</span> 貼入接龍
+    </button>
+    <button class="step-btn" onclick="switchStep(2)" id="stepBtn2">
+      <span class="step-num">2</span> 對帳勾選
+    </button>
+    <button class="step-btn" onclick="switchStep(3)" id="stepBtn3">
+      <span class="step-num">3</span> 產出報告
+    </button>
+  </div>
+
+  <!-- ===== STEP 1 ===== -->
+  <div id="step1">
+    <div class="card">
+      <h2>貼入 LINE 接龍文字</h2>
+      <textarea id="jieLongInput" rows="11" placeholder="將 LINE 群組的接龍文字複製貼上&#10;&#10;支援各種格式，例如：&#10;1.王傳明1200（46683）&#10;2.安婼 $ 1200（45760）&#10;7.Chuck$1200 (38391)&#10;18.嬡琳$1200&#10;（街口74662）"></textarea>
+      <div class="action-bar">
+        <button class="btn btn-primary" onclick="parseJieLong()">解析接龍</button>
+        <span id="parseHint" class="hint"></span>
+      </div>
+    </div>
+
+    <div class="card hidden" id="parsedCard">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <h2 style="margin:0;">解析結果 <span class="hint">（可直接修改欄位）</span></h2>
+        <button class="btn btn-sm btn-outline" onclick="addRow()">＋ 新增一列</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="parse-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>姓名</th>
+              <th>金額（$）</th>
+              <th>帳號末五碼</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="parsedBody"></tbody>
+        </table>
+      </div>
+      <div class="action-bar">
+        <button class="btn btn-primary" onclick="goStep2()" style="margin-left:auto;">確認，前往對帳 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== STEP 2 ===== -->
+  <div id="step2" class="hidden">
+
+    <div class="card">
+      <div class="stats-bar">
+        <div class="stat-item">
+          <div class="stat-number" id="sTot">0</div>
+          <div class="stat-label">總人數</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number green" id="sPaid">0</div>
+          <div class="stat-label">已收款</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number red" id="sUnpaid">0</div>
+          <div class="stat-label">待確認</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="sCollect" style="font-size:16px;">$0</div>
+          <div class="stat-label">已收金額</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="sExpect" style="font-size:16px;">$0</div>
+          <div class="stat-label">應收總額</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <h2 style="margin:0;">對帳清單</h2>
+        <span class="hint">✅ 勾選 = 已入帳確認</span>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="setFilter('all',this)">全部</button>
+        <button class="filter-btn" onclick="setFilter('unpaid',this)">待確認</button>
+        <button class="filter-btn" onclick="setFilter('paid',this)">已收款</button>
+      </div>
+
+      <div id="checklistBody"></div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-outline" onclick="switchStep(1)">← 返回修改名單</button>
+      <button class="btn btn-primary" onclick="switchStep(3)" style="margin-left:auto;">產出報告 →</button>
+    </div>
+  </div>
+
+  <!-- ===== STEP 3 ===== -->
+  <div id="step3" class="hidden">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+        <h2 style="margin:0;">LINE 報告預覽</h2>
+        <button class="btn btn-success" onclick="copyReport()">複製報告</button>
+      </div>
+      <div class="report-box" id="reportBox"></div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-outline" onclick="switchStep(2)">← 返回對帳</button>
+      <button class="btn btn-outline" onclick="downloadImage()">📷 下載截圖</button>
+      <button class="btn btn-outline" onclick="exportCSV()">下載 CSV</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== State =====================
+var currentMonth = '';
+var members = [];  // { id, seq, name, amount, last5, paid, actualAmount, note }
+var nextId = 1;
+var filterMode = 'all';
+
+// ===================== Init =====================
+window.onload = function() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = String(now.getMonth() + 1).padStart('0', 2);
+  // padStart polyfill
+  if (!String.prototype.padStart) {
+    String.prototype.padStart = function(len, fill) {
+      var s = String(this);
+      while (s.length < len) s = fill + s;
+      return s;
+    };
+  }
+  m = String(now.getMonth() + 1).padStart(2, '0');
+  currentMonth = y + '-' + m;
+  document.getElementById('monthInput').value = currentMonth;
+  loadFromStorage();
+
+  document.getElementById('monthInput').addEventListener('change', function() {
+    saveToStorage();
+    currentMonth = this.value;
+    loadFromStorage();
+    if (members.length > 0) {
+      renderParsedTable();
+      document.getElementById('parsedCard').classList.remove('hidden');
+    } else {
+      document.getElementById('parsedCard').classList.add('hidden');
+    }
+    renderChecklist();
+    updateStats();
+  });
+};
+
+// ===================== Storage =====================
+function saveToStorage() {
+  if (!currentMonth) return;
+  localStorage.setItem('ga_' + currentMonth, JSON.stringify({ members: members, nextId: nextId }));
+}
+
+function loadFromStorage() {
+  var raw = localStorage.getItem('ga_' + currentMonth);
+  if (raw) {
+    var data = JSON.parse(raw);
+    members = data.members || [];
+    nextId = data.nextId || 1;
+    if (members.length > 0) {
+      renderParsedTable();
+      document.getElementById('parsedCard').classList.remove('hidden');
+      // Restore textarea hint
+      document.getElementById('parseHint').textContent = '已載入本月資料（共 ' + members.length + ' 筆）';
+    }
+  } else {
+    members = [];
+    nextId = 1;
+    document.getElementById('parsedCard').classList.add('hidden');
+    document.getElementById('jieLongInput').value = '';
+    document.getElementById('parseHint').textContent = '';
+  }
+}
+
+// ===================== Parsing =====================
+function parseJieLong() {
+  var text = document.getElementById('jieLongInput').value.trim();
+  if (!text) { showToast('請先貼入接龍文字'); return; }
+
+  // Pre-process: merge bracket-only continuation lines
+  var rawLines = text.split('\n');
+  var lines = [];
+  for (var i = 0; i < rawLines.length; i++) {
+    var line = rawLines[i].trim();
+    if (!line) continue;
+    if (/^[（(]/.test(line) && lines.length > 0) {
+      lines[lines.length - 1] += line;
+    } else {
+      lines.push(line);
+    }
+  }
+
+  var parsed = [];
+  var seq = 1;
+
+  for (var j = 0; j < lines.length; j++) {
+    var line = lines[j];
+
+    // Find opening bracket position
+    var bracketOpen = line.search(/[（(]/);
+    if (bracketOpen === -1) continue;
+
+    var bracketClose = line.search(/[）)]/);
+    if (bracketClose === -1) continue;
+
+    var beforeBracket = line.substring(0, bracketOpen);
+    var bracketContent = line.substring(bracketOpen + 1, bracketClose);
+
+    // Must start with a sequence number
+    if (!/^\d+[.\s、。]/.test(beforeBracket)) continue;
+
+    // Extract amount: last digit sequence before bracket
+    var amtMatch = beforeBracket.match(/(\d+)\s*[＄$]?\s*$/);
+    if (!amtMatch) {
+      // Try: digits followed by optional spaces/$ at end
+      amtMatch = beforeBracket.match(/[＄$]\s*(\d+)\s*$/) || beforeBracket.match(/(\d+)\s*$/);
+    }
+    if (!amtMatch) continue;
+
+    var amount = parseInt(amtMatch[1]);
+    if (isNaN(amount) || amount < 1) continue;
+
+    // Extract name: between seq number and amount
+    var seqMatch = beforeBracket.match(/^(\d+[.\s、。]+)/);
+    if (!seqMatch) continue;
+    var nameRaw = beforeBracket.substring(seqMatch[0].length, beforeBracket.lastIndexOf(amtMatch[0]));
+    var name = nameRaw.replace(/[＄$\s]+$/g, '').trim();
+    if (!name) continue;
+
+    // Extract last5: digits from bracket content (take last digit group)
+    var digitGroups = bracketContent.match(/\d+/g);
+    if (!digitGroups) continue;
+    var last5 = digitGroups[digitGroups.length - 1].slice(-5);
+
+    parsed.push({
+      id: nextId++,
+      seq: seq++,
+      name: name,
+      amount: amount,
+      last5: last5,
+      paid: false,
+      actualAmount: amount,
+      note: ''
+    });
+  }
+
+  if (parsed.length === 0) {
+    document.getElementById('parseHint').textContent = '⚠️ 無法解析，請確認格式或手動新增';
+    showToast('解析失敗，請確認文字格式');
+    // Still show empty table so user can add manually
+    members = [];
+    renderParsedTable();
+    document.getElementById('parsedCard').classList.remove('hidden');
+    return;
+  }
+
+  members = parsed;
+  renderParsedTable();
+  document.getElementById('parsedCard').classList.remove('hidden');
+  document.getElementById('parseHint').textContent = '✓ 解析成功，共 ' + parsed.length + ' 筆';
+  saveToStorage();
+}
+
+// ===================== Step 1 Table =====================
+function renderParsedTable() {
+  var tbody = document.getElementById('parsedBody');
+  tbody.innerHTML = '';
+  members.forEach(function(m) {
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td class="seq-cell">' + m.seq + '</td>' +
+      '<td><input type="text" value="' + esc(m.name) + '" style="width:100px;" onchange="updateField(' + m.id + ',\'name\',this.value)"></td>' +
+      '<td><input type="number" value="' + m.amount + '" style="width:80px;" onchange="updateField(' + m.id + ',\'amount\',parseInt(this.value)||0);updateField(' + m.id + ',\'actualAmount\',parseInt(this.value)||0)"></td>' +
+      '<td><input type="text" value="' + esc(m.last5) + '" class="last5-input" maxlength="6" onchange="updateField(' + m.id + ',\'last5\',this.value)"></td>' +
+      '<td><button class="btn btn-danger" onclick="removeRow(' + m.id + ')">刪除</button></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function updateField(id, field, val) {
+  var m = members.find(function(x) { return x.id === id; });
+  if (m) { m[field] = val; saveToStorage(); }
+}
+
+function removeRow(id) {
+  members = members.filter(function(x) { return x.id !== id; });
+  renderParsedTable();
+  saveToStorage();
+}
+
+function addRow() {
+  var maxSeq = members.length > 0 ? Math.max.apply(null, members.map(function(m){ return m.seq; })) + 1 : 1;
+  members.push({ id: nextId++, seq: maxSeq, name: '新成員', amount: 1200, last5: '00000', paid: false, actualAmount: 1200, note: '' });
+  renderParsedTable();
+  saveToStorage();
+}
+
+function goStep2() {
+  if (members.length === 0) { showToast('名單是空的，請先新增成員'); return; }
+  saveToStorage();
+  switchStep(2);
+}
+
+// ===================== Step 2 Checklist =====================
+function setFilter(mode, btn) {
+  filterMode = mode;
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderChecklist();
+}
+
+function renderChecklist() {
+  var body = document.getElementById('checklistBody');
+  if (members.length === 0) {
+    body.innerHTML = '<div class="empty-state">請先在步驟一貼入接龍名單</div>';
+    updateStats();
+    return;
+  }
+
+  var filtered = members.filter(function(m) {
+    if (filterMode === 'paid') return m.paid;
+    if (filterMode === 'unpaid') return !m.paid;
+    return true;
+  });
+
+  body.innerHTML = '';
+  filtered.forEach(function(m) {
+    var div = document.createElement('div');
+    div.className = 'member-row' + (m.paid ? ' paid' : '');
+    div.id = 'row_' + m.id;
+
+    div.innerHTML =
+      '<input type="checkbox" class="member-checkbox" ' + (m.paid ? 'checked' : '') + ' onchange="togglePaid(' + m.id + ',this.checked)">' +
+      '<div class="member-info">' +
+        '<div class="member-name">' + esc(m.name) + '</div>' +
+        '<div class="member-detail">末五碼：' + esc(m.last5) + '　預期金額：$' + m.amount + '</div>' +
+      '</div>' +
+      '<div class="right-inputs">' +
+        '<div class="amount-row">' +
+          '<span class="amount-label">實收 $</span>' +
+          '<input type="number" class="actual-amount-input" value="' + m.actualAmount + '" ' + (m.paid ? '' : 'disabled') + ' style="opacity:' + (m.paid ? '1' : '0.4') + ';" onchange="updateField(' + m.id + ',\'actualAmount\',parseInt(this.value)||0);updateStats();">' +
+        '</div>' +
+        '<input type="text" class="note-input" placeholder="備註（選填）" value="' + esc(m.note) + '" onchange="updateField(' + m.id + ',\'note\',this.value)">' +
+      '</div>';
+
+    body.appendChild(div);
+  });
+
+  updateStats();
+}
+
+function togglePaid(id, checked) {
+  var m = members.find(function(x) { return x.id === id; });
+  if (m) {
+    m.paid = checked;
+    saveToStorage();
+    renderChecklist();
+  }
+}
+
+function updateStats() {
+  var paid = members.filter(function(m) { return m.paid; });
+  var unpaid = members.filter(function(m) { return !m.paid; });
+  var collected = paid.reduce(function(s, m) { return s + (m.actualAmount || 0); }, 0);
+  var expected = members.reduce(function(s, m) { return s + (m.amount || 0); }, 0);
+
+  document.getElementById('sTot').textContent = members.length;
+  document.getElementById('sPaid').textContent = paid.length;
+  document.getElementById('sUnpaid').textContent = unpaid.length;
+  document.getElementById('sCollect').textContent = '$' + collected.toLocaleString();
+  document.getElementById('sExpect').textContent = '$' + expected.toLocaleString();
+}
+
+// ===================== Step 3 Report =====================
+function generateReport() {
+  var paid = members.filter(function(m) { return m.paid; });
+  var unpaid = members.filter(function(m) { return !m.paid; });
+  var collected = paid.reduce(function(s, m) { return s + (m.actualAmount || 0); }, 0);
+  var expected = members.reduce(function(s, m) { return s + (m.amount || 0); }, 0);
+  var parts = currentMonth.split('-');
+  var year = parts[0], month = parseInt(parts[1]);
+  var rate = members.length > 0 ? Math.round(paid.length / members.length * 100) : 0;
+
+  var r = '';
+  r += '📋 ' + year + ' 年 ' + month + ' 月　助糧金對帳結果\n';
+  r += '─────────────────────────\n\n';
+
+  if (paid.length > 0) {
+    r += '✅ 已收款（' + paid.length + ' 人）\n';
+    paid.forEach(function(m, i) {
+      var line = (i + 1) + '. ' + m.name + '　$' + m.actualAmount;
+      if (m.actualAmount !== m.amount) line += '　⚠️ 預期 $' + m.amount;
+      if (m.note) line += '　📝 ' + m.note;
+      r += line + '\n';
+    });
+    r += '\n';
+  }
+
+  if (unpaid.length > 0) {
+    r += '⏳ 待確認（' + unpaid.length + ' 人）\n';
+    unpaid.forEach(function(m, i) {
+      var line = (i + 1) + '. ' + m.name + '　$' + m.amount;
+      if (m.note) line += '　📝 ' + m.note;
+      r += line + '\n';
+    });
+    r += '\n';
+  }
+
+  r += '─────────────────────────\n';
+  r += '💰 本月已收：$' + collected.toLocaleString();
+
+  return r;
+}
+
+function copyReport() {
+  var text = document.getElementById('reportBox').textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() { showToast('已複製，可直接貼到 LINE'); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('已複製，可直接貼到 LINE');
+  }
+}
+
+function downloadImage() {
+  var text = document.getElementById('reportBox').textContent;
+  var lines = text.split('\n');
+  var parts = currentMonth.split('-');
+  var year = parts[0], month = String(parseInt(parts[1])).padStart(2, '0');
+
+  var padding = 36;
+  var lineHeight = 30;
+  var fontFace = '16px "Microsoft JhengHei", "微軟正黑體", sans-serif';
+  var width = 520;
+
+  // Measure needed width
+  var tmp = document.createElement('canvas');
+  var tctx = tmp.getContext('2d');
+  tctx.font = fontFace;
+  var maxW = 0;
+  lines.forEach(function(l) { var w = tctx.measureText(l).width; if (w > maxW) maxW = w; });
+  width = Math.max(width, maxW + padding * 2);
+
+  var height = padding * 2 + lines.length * lineHeight;
+  var canvas = document.createElement('canvas');
+  canvas.width = width * 2;
+  canvas.height = height * 2;
+  var ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  // Background
+  ctx.fillStyle = '#1a1b2e';
+  ctx.fillRect(0, 0, width, height);
+
+  // Lines
+  ctx.font = fontFace;
+  ctx.textBaseline = 'top';
+  lines.forEach(function(line, i) {
+    if (line.startsWith('✅') || /^\d+\. /.test(line) && i > 0 && lines[i-1] && lines[i-1].startsWith('✅'))
+      ctx.fillStyle = '#a8f0c0';
+    else if (line.startsWith('⏳'))
+      ctx.fillStyle = '#f0a8a8';
+    else if (line.startsWith('💰'))
+      ctx.fillStyle = '#f9e080';
+    else if (line.startsWith('─'))
+      ctx.fillStyle = '#444466';
+    else if (line.startsWith('📋'))
+      ctx.fillStyle = '#7eb8f7';
+    else
+      ctx.fillStyle = '#d4d8f0';
+    ctx.fillText(line, padding, padding + i * lineHeight);
+  });
+
+  var a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = '助糧金_' + year + month + '.png';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast('截圖已下載');
+}
+
+function exportCSV() {
+  var parts = currentMonth.split('-');
+  var year = parts[0], month = parseInt(parts[1]);
+  var csv = '﻿月份,姓名,預期金額,實收金額,帳號末五碼,狀態,備註\n';
+  members.forEach(function(m) {
+    csv += year + '年' + month + '月,' + m.name + ',' + m.amount + ',' +
+      (m.paid ? m.actualAmount : '') + ',' + m.last5 + ',' +
+      (m.paid ? '已繳' : '未繳') + ',' + m.note + '\n';
+  });
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = '助糧金_' + year + String(month).padStart(2, '0') + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ===================== Navigation =====================
+function switchStep(n) {
+  [1, 2, 3].forEach(function(i) {
+    var el = document.getElementById('step' + i);
+    var btn = document.getElementById('stepBtn' + i);
+    if (i === n) {
+      el.classList.remove('hidden');
+      btn.classList.add('active');
+    } else {
+      el.classList.add('hidden');
+      btn.classList.remove('active');
+    }
+  });
+  if (n === 2) renderChecklist();
+  if (n === 3) document.getElementById('reportBox').textContent = generateReport();
+}
+
+// ===================== Utils =====================
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
+}
+</script>
+</body>
+</html>

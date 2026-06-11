@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天心中醫 健康手冊</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #2d7a4f;
+    --green-light: #e8f5ee;
+    --green-mid: #c2e0ce;
+    --teal: #1a6b6b;
+    --teal-light: #e0f2f2;
+    --amber: #c47c00;
+    --amber-light: #fff8e6;
+    --red: #b03a2e;
+    --text: #1a1a1a;
+    --text-soft: #444;
+    --border: #d0d0d0;
+    --white: #ffffff;
+    --bg: #f7f9f7;
+  }
+
+  body {
+    font-family: 'Noto Sans TC', 'PingFang TC', '微軟正黑體', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 19px;
+    line-height: 1.85;
+    -webkit-text-size-adjust: 100%;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--teal) 100%);
+    color: white;
+    padding: 28px 20px 22px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+  header h1 {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+  }
+  header p {
+    font-size: 15px;
+    opacity: 0.85;
+    letter-spacing: 1px;
+  }
+
+  /* ── Bottom Nav ── */
+  nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid var(--green-mid);
+    z-index: 99;
+    box-shadow: 0 -3px 12px rgba(0,0,0,0.12);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  nav button {
+    flex: 1;
+    padding: 10px 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: var(--text-soft);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+    border-top: 3px solid transparent;
+  }
+  nav button .nav-icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+  nav button.active {
+    color: var(--green);
+    border-top-color: var(--green);
+    background: var(--green-light);
+  }
+  nav button:active { opacity: 0.6; }
+
+  /* ── Pages ── */
+  .page { display: none; padding: 20px 16px 40px; max-width: 680px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ── Section Card ── */
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-left: 6px solid var(--green);
+  }
+  .card.teal { border-left-color: var(--teal); }
+  .card.amber { border-left-color: var(--amber); }
+  .card.red { border-left-color: var(--red); }
+
+  .card-title {
+    font-size: 21px;
+    font-weight: 900;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--green);
+  }
+  .card.teal .card-title { color: var(--teal); }
+  .card.amber .card-title { color: var(--amber); }
+  .card.red .card-title { color: var(--red); }
+
+  .card-title .icon {
+    font-size: 26px;
+    line-height: 1;
+  }
+
+  p { margin-bottom: 12px; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Highlight Box ── */
+  .highlight {
+    background: var(--green-light);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin: 14px 0;
+    font-size: 18px;
+    border: 1px solid var(--green-mid);
+  }
+  .highlight.amber-bg {
+    background: var(--amber-light);
+    border-color: #f0d080;
+  }
+  .highlight.teal-bg {
+    background: var(--teal-light);
+    border-color: #a0d0d0;
+  }
+
+  /* ── List ── */
+  .tip-list { list-style: none; padding: 0; }
+  .tip-list li {
+    padding: 11px 14px 11px 44px;
+    position: relative;
+    border-bottom: 1px solid #eee;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  .tip-list li:last-child { border-bottom: none; }
+  .tip-list li::before {
+    content: attr(data-num);
+    position: absolute;
+    left: 8px;
+    top: 11px;
+    background: var(--green);
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .tip-list.teal li::before { background: var(--teal); }
+  .tip-list.amber li::before { background: var(--amber); }
+
+  /* ── Clock Table ── */
+  .clock-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .clock-table th {
+    background: var(--green);
+    color: white;
+    padding: 12px 10px;
+    font-size: 16px;
+    text-align: left;
+  }
+  .clock-table th:first-child { border-radius: 8px 0 0 0; }
+  .clock-table th:last-child { border-radius: 0 8px 0 0; }
+  .clock-table td {
+    padding: 12px 10px;
+    font-size: 17px;
+    border-bottom: 1px solid #e0ece5;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .clock-table tr:nth-child(even) td { background: var(--green-light); }
+  .clock-table .period {
+    font-weight: 800;
+    color: var(--green);
+    font-size: 16px;
+    white-space: nowrap;
+  }
+  .clock-table .time {
+    color: var(--text-soft);
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  /* ── Acupoint diagram ── */
+  .acupoint-box {
+    background: #f0faf5;
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+    border: 1px solid var(--green-mid);
+    margin: 14px 0;
+  }
+  .acupoint-img {
+    width: 100%;
+    max-width: 340px;
+    display: block;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+  }
+  .acupoint-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+    text-align: left;
+  }
+  .acupoint-item {
+    background: white;
+    border-radius: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--green-mid);
+    font-size: 17px;
+  }
+  .acupoint-item strong { color: var(--green); display: block; font-size: 18px; }
+
+  /* ── Food list ── */
+  .food-tag {
+    display: inline-block;
+    background: var(--green-light);
+    border: 1px solid var(--green-mid);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 16px;
+    margin: 4px 3px;
+    color: var(--green);
+    font-weight: 600;
+  }
+  .food-tag.avoid {
+    background: #fdecea;
+    border-color: #f5b8b5;
+    color: var(--red);
+  }
+  .food-tag.amber {
+    background: var(--amber-light);
+    border-color: #f0d080;
+    color: var(--amber);
+  }
+
+  /* ── Page title ── */
+  .page-hero {
+    text-align: center;
+    padding: 20px 0 8px;
+    margin-bottom: 16px;
+  }
+  .page-hero .emoji { font-size: 52px; display: block; margin-bottom: 8px; }
+  .page-hero h2 { font-size: 26px; font-weight: 900; color: var(--green); }
+  .page-hero.teal h2 { color: var(--teal); }
+  .page-hero.amber h2 { color: var(--amber); }
+  .page-hero p { font-size: 16px; color: var(--text-soft); margin-top: 4px; }
+
+  /* ── Rinse methods ── */
+  .rinse-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .rinse-card {
+    background: var(--teal-light);
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #a0d0d0;
+    font-size: 16px;
+  }
+  .rinse-card strong { display: block; font-size: 17px; color: var(--teal); margin-bottom: 4px; }
+
+  /* ── Warning box ── */
+  .warning {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 17px;
+    margin: 12px 0;
+  }
+  .warning::before { content: '⚠️ '; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 24px 16px;
+    font-size: 14px;
+    color: #888;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏥 天心中醫</h1>
+  <p>健康知識手冊 · 關心您的健康</p>
+</header>
+
+<nav id="mainNav">
+  <button class="active" onclick="showPage('floaters', this)"><span class="nav-icon">👁</span>飛蚊症</button>
+  <button onclick="showPage('eyes', this)"><span class="nav-icon">🌿</span>眼睛保健</button>
+  <button onclick="showPage('oral', this)"><span class="nav-icon">🦷</span>口腔保健</button>
+  <button onclick="showPage('fibroid', this)"><span class="nav-icon">🏥</span>子宮肌瘤</button>
+  <button onclick="showPage('clock', this)"><span class="nav-icon">🕐</span>生理時鐘</button>
+</nav>
+
+<!-- ══════════════ 飛蚊症 ══════════════ -->
+<div class="page active" id="page-floaters">
+  <div class="page-hero">
+    <span class="emoji">👁️</span>
+    <h2>飛蚊症</h2>
+    <p>了解病因與日常保健</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💡</span>什麼是飛蚊症？</div>
+    <p>眼睛前方出現黑影，卻又抓不到，閉眼就消失。影像大小不一，小如米粒、大如昆蟲。</p>
+    <div class="highlight">
+      本病多發生於<strong>中、老年人</strong>，請多留意！
+    </div>
+  </div>
+
+  <div class="card teal">
+    <div class="card-title"><span class="icon">🔍</span>發病原因</div>
+    <p>眼球內有一種透明膠質物體稱為<strong>玻璃體</strong>，因年紀老化、近視、竭視勞瞻或營養失調，會使玻璃體退化液化，形成病理產物投影在視網膜上，便形成惱人的飛蚊症。</p>
+    <p>外在因素包括：動過白內障手術、眼內雷射治療、眼內發炎或玻璃晶狀物沉積，也會造成飛蚊症。</p>
+  </div>
+
+  <div class="card amber">
+    <div class="card-title"><span class="icon">😣</span>常見症狀</div>
+    <ul class="tip-list amber">
+      <li data-num="●">眼前出現黑色影像</li>
+      <li data-num="●">偏頭痛</li>
+      <li data-num="●">睡眠品質不佳</li>
+      <li data-num="●">眼球常覺乾澀、刺感或酸澀</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">✅</span>日常保健四要點</div>
+    <ul class="tip-list">
+      <li data-num="1">少食辛辣刺激物</li>
+      <li data-num="2">看書、看電視、電腦距離應適中</li>
+      <li data-num="3">營養攝取均衡，平時多食牛奶、蔬果、糙米、深海魚、海藻、胡蘿蔔等</li>
+      <li data-num="4">若覺眼睛乾澀、酸澀或眼前視物異樣，應即就醫，以免造成遺憾</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════ 眼睛保健 ══════════════ -->
+<div class="page" id="page-eyes">
+  <div class="page-hero">
+    <span class="emoji">🌿</span>
+    <h2>眼睛保健</h2>
+    <p>中醫護眼 · 飲食與穴道</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🌍</span>中醫護眼的認可</div>
+    <p>世界衛生組織（W.H.O.）認可傳統中醫治療眼病療效顯著，漢方眼科可配合西醫眼科一同處置，適用於近視初期、黃斑部病變、青光眼前期、白內障前期、乾眼症、眼睛疲勞等。</p>
+    <div class="highlight teal-bg">
+      <strong>現代人過度使用 3C 產品，更需注意保護靈魂之窗！</strong>
+    </div>
+  </div>
+
+  <div class="card red">
+    <div class="card-title"><span class="icon">🚫</span>飲食禁忌（少吃）</div>
+    <p><strong>辛辣類：</strong></p>
+    <div>
+      <span class="food-tag avoid">辣椒</span><span class="food-tag avoid">胡椒</span>
+      <span class="food-tag avoid">大蒜</span><span class="food-tag avoid">薑</span>
+      <span class="food-tag avoid">芫荽</span><span class="food-tag avoid">沙茶醬</span>
+    </div>
+    <p style="margin-top:14px"><strong>燥熱類：</strong></p>
+    <div>
+      <span class="food-tag avoid">燻炸燒烤物</span><span class="food-tag avoid">茴香</span>
+      <span class="food-tag avoid">肉桂</span><span class="food-tag avoid">韭菜</span><span class="food-tag avoid">羊肉</span>
+    </div>
+    <p style="margin-top:14px"><strong>刺激物：</strong></p>
+    <div>
+      <span class="food-tag avoid">醃漬品</span><span class="food-tag avoid">咖啡</span>
+      <span class="food-tag avoid">咖哩</span><span class="food-tag avoid">酒</span>
+      <span class="food-tag avoid">芒果</span><span class="food-tag avoid">榴槤</span>
+      <span class="food-tag avoid">筍類</span><span class="food-tag avoid">鴨肉</span>
+      <span class="food-tag avoid">鵝肉</span><span class="food-tag avoid">帶殼海產</span>
+    </div>
+  </div>
+
+  <div class="card teal">
+    <div class="card-title"><span class="icon">🥦</span>建議多食（平性飲食）</div>
+    <p><strong>蔬菜類：</strong></p>
+    <div>
+      <span class="food-tag">蓮子</span><span class="food-tag">豌豆</span><span class="food-tag">四季豆</span>
+      <span class="food-tag">地瓜葉</span><span class="food-tag">黑木耳</span><span class="food-tag">銀耳</span>
+      <span class="food-tag">山藥</span><span class="food-tag">紅豆</span><span class="food-tag">菠菜</span>
+      <span class="food-tag">高麗菜</span><span class="food-tag">花椰菜</span><span class="food-tag">金針菇</span>
+      <span class="food-tag">甜椒</span><span class="food-tag">苜宿芽</span>
+    </div>
+    <p style="margin-top:14px"><strong>魚類：</strong></p>
+    <div>
+      <span class="food-tag">鱸魚</span><span class="food-tag">虱目魚</span>
+    </div>
+    <p style="margin-top:14px"><strong>水果（白天食用）：</strong></p>
+    <div>
+      <span class="food-tag">蘋果</span><span class="food-tag">香蕉</span><span class="food-tag">木瓜</span>
+    </div>
+    <p style="margin-top:14px"><strong>其他：</strong></p>
+    <div>
+      <span class="food-tag">水</span><span class="food-tag">雞蛋</span><span class="food-tag">白米飯</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">👆</span>護眼穴道按摩</div>
+    <p>每天依序按壓眼睛周圍穴道，每個穴道按數十次，有助眼部保健：</p>
+    <div class="acupoint-grid">
+      <div class="acupoint-item">
+        <strong>🔵 魚腰穴</strong>眉毛正中間
+      </div>
+      <div class="acupoint-item">
+        <strong>🔵 攢竹穴</strong>眉頭內側凹陷處
+      </div>
+      <div class="acupoint-item">
+        <strong>🔵 瞳子髎穴</strong>眼角外側旁
+      </div>
+      <div class="acupoint-item">
+        <strong>🔵 睛明穴</strong>眼角內側旁
+      </div>
+      <div class="acupoint-item" style="grid-column: 1 / -1;">
+        <strong>🔵 承泣穴</strong>眼球正下方眼眶邊緣
+      </div>
+    </div>
+    <div class="highlight" style="margin-top:14px; font-size:16px;">
+      💆 搭配醫師診療、定期回診，並注重養生，效果更佳。
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 口腔保健 ══════════════ -->
+<div class="page" id="page-oral">
+  <div class="page-hero teal">
+    <span class="emoji">🦷</span>
+    <h2>口腔保健與養生</h2>
+    <p>從小養成好習慣，保護牙齒一輩子</p>
+  </div>
+
+  <div class="card teal">
+    <div class="card-title"><span class="icon">💧</span>一、勤漱口</div>
+    <p>每日早、午、晚飯後，或平時甜食後，都應即時漱口。</p>
+    <div class="rinse-grid">
+      <div class="rinse-card"><strong>清水漱</strong>冷水或溫水</div>
+      <div class="rinse-card"><strong>茶漱</strong>解酒去膩，爽口潔齒</div>
+      <div class="rinse-card"><strong>鹽水漱</strong>水1000毫升＋食鹽10克</div>
+      <div class="rinse-card"><strong>食醋漱</strong>水1000毫升＋醋20毫升</div>
+    </div>
+    <div class="highlight teal-bg" style="margin-top:12px">
+      <strong>麥冬水漱：</strong>麥冬、玄參各15克，加500毫升水煮湯後漱口
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">😁</span>二、牙齒常叩</div>
+    <div class="highlight amber-bg">
+      俗云：「<strong>清晨叩齒三十六，到老牙齒不會落</strong>」
+    </div>
+  </div>
+
+  <div class="card amber">
+    <div class="card-title"><span class="icon">🪥</span>其他保健要點</div>
+    <ul class="tip-list amber">
+      <li data-num="3">早晚刷牙：豎刷勿橫刷</li>
+      <li data-num="4">搓唇按摩：口唇閉合，手四指併攏，輕輕在口唇外搓揉</li>
+      <li data-num="5">正確咀嚼：細嚼慢嚥，雙側牙齒均衡使用</li>
+      <li data-num="6">糾正惡習：勿用牙籤剔牙（最好用牙線），兒童勿吮手指、勿咬鉛筆</li>
+      <li data-num="7">合理營養：均衡飲食，蔬果、蛋、牛奶應充足攝取</li>
+    </ul>
+    <div class="warning" style="margin-top:12px">
+      勿大量或長期服用<strong>四環黴素藥物</strong>，否則會造成永久性黃牙。
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 子宮肌瘤 ══════════════ -->
+<div class="page" id="page-fibroid">
+  <div class="page-hero amber">
+    <span class="emoji">🏥</span>
+    <h2>子宮肌瘤</h2>
+    <p>認識病因、症狀與治療</p>
+  </div>
+
+  <div class="card amber">
+    <div class="card-title"><span class="icon">📋</span>定義</div>
+    <p>子宮肌瘤主要由子宮平滑肌增生形成的<strong>良性腫瘤</strong>，又稱「子宮平滑肌瘤」。</p>
+    <p>本病是女性生殖器官中最常見的良性腫瘤，多發生於 <strong>30～50 歲</strong>的中年婦女。</p>
+    <div class="warning">
+      防治不當可引起大出血、感染、化膿及扭轉等嚴重併發症。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🔎</span>病因（共四類）</div>
+    <ul class="tip-list">
+      <li data-num="1"><strong>氣滯：</strong>緊張、生氣、壓力使氣血不和，瘀積日久成腫瘤</li>
+      <li data-num="2"><strong>血瘀：</strong>經期、產後感受風寒，或房室不潔，餘血排出不全積累而成</li>
+      <li data-num="3"><strong>痰濕內阻：</strong>多食冰冷使月經延後，子宮內膜剝落不全或有血塊，積累而成</li>
+      <li data-num="4"><strong>先天不足：</strong>子宮及卵巢發育不全，後天失衡，熬夜新血不生，月經常見帶咖啡色</li>
+    </ul>
+  </div>
+
+  <div class="card teal">
+    <div class="card-title"><span class="icon">🩺</span>辨症方式</div>
+    <ul class="tip-list teal">
+      <li data-num="1">自覺症狀：月經過多或淋瀝不淨、濃帶、赤帶增多</li>
+      <li data-num="2">超音波檢查</li>
+      <li data-num="3">宮腔鏡檢查</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">💊</span>治療方式</div>
+    <ul class="tip-list">
+      <li data-num="1">藥物治療，定期超音波追蹤檢查</li>
+      <li data-num="2">針灸治療</li>
+    </ul>
+  </div>
+
+  <div class="card amber">
+    <div class="card-title"><span class="icon">🛡</span>預防與護理</div>
+    <p><strong>預防：</strong>30 歲以上婦女定期作婦科檢查，特別是經量多或腹部有包塊者，必要時作超音波，經期、經前勿吃冰冷之物。</p>
+    <p><strong>護理：</strong>經量多時應臥床休息，採頭低足高姿勢，加強心理安慰，注意觀察面色、神態、舌苔、脈象、血壓的變化，必要時做好輸血輸液準備，加強營養補給。</p>
+    <div class="highlight amber-bg">
+      ⚠️ 平時注意有無急性腹痛或壓迫感，防止肌瘤扭轉及變性。
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 生理時鐘 ══════════════ -->
+<div class="page" id="page-clock">
+  <div class="page-hero">
+    <span class="emoji">🕐</span>
+    <h2>生理時鐘表</h2>
+    <p>天心中醫關心您的每一刻</p>
+  </div>
+
+  <div class="card" style="padding: 0; overflow: hidden;">
+    <table class="clock-table">
+      <thead>
+        <tr>
+          <th>時段</th>
+          <th>時期</th>
+          <th>身體狀況與建議</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="time">午夜<br>12～1點</span></td>
+          <td><span class="period">淺眠期</span></td>
+          <td>多夢而敏感，身體不適者易在此時痛醒。</td>
+        </tr>
+        <tr>
+          <td><span class="time">凌晨<br>1～2點</span></td>
+          <td><span class="period">排毒期</span></td>
+          <td>肝臟排除毒素活動旺盛，應讓身體進入睡眠狀態，讓肝臟完成代謝廢物。</td>
+        </tr>
+        <tr>
+          <td><span class="time">凌晨<br>3～4點</span></td>
+          <td><span class="period">休眠期</span></td>
+          <td>重症病人最易發病時刻，常有患病者在此時死亡，熬夜最好勿超過這個時間。</td>
+        </tr>
+        <tr>
+          <td><span class="time">上午<br>9～11點</span></td>
+          <td><span class="period">精華期</span></td>
+          <td>注意力及記憶力最好，工作與學習的最佳時段。</td>
+        </tr>
+        <tr>
+          <td><span class="time">中午<br>12～1點</span></td>
+          <td><span class="period">午休期</span></td>
+          <td>最好靜坐或閉目休息再進餐，正午不可飲酒，易醉又傷肝。</td>
+        </tr>
+        <tr>
+          <td><span class="time">下午<br>2～3點</span></td>
+          <td><span class="period">高峰期</span></td>
+          <td>分析力和創造力得以發揮淋漓盡致的極致時段！</td>
+        </tr>
+        <tr>
+          <td><span class="time">下午<br>4～5點</span></td>
+          <td><span class="period">低潮期</span></td>
+          <td>體力耗弱，最好補充水果來解饞，避免因飢餓而貪食致肥胖。</td>
+        </tr>
+        <tr>
+          <td><span class="time">下午<br>5～6點</span></td>
+          <td><span class="period">鬆散期</span></td>
+          <td>血糖略降，嗅覺與味覺最敏感，不妨準備晚膳來提振精神。</td>
+        </tr>
+        <tr>
+          <td><span class="time">晚上<br>7～8點</span></td>
+          <td><span class="period">暫憩期</span></td>
+          <td>最好能在飯後30分鐘去散個步，放鬆一下，紓解一日的疲勞困頓。</td>
+        </tr>
+        <tr>
+          <td><span class="time">晚上<br>8～10點</span></td>
+          <td><span class="period">夜休期</span></td>
+          <td>晚上活動的顛峰時段，建議善用此時進行商議、進修等需要思考周密的活動。</td>
+        </tr>
+        <tr>
+          <td><span class="time">晚上<br>11～12點</span></td>
+          <td><span class="period">夜眠期</span></td>
+          <td>經過鎮日忙碌，此時應放鬆心情進入夢鄉，千萬別讓身體過度負荷，那可得不償失。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="highlight" style="margin-top:16px; text-align:center; font-size:17px;">
+    🌙 規律作息是健康的根本，好好珍惜您的身體！
+  </div>
+</div>
+
+<footer>
+  天心中醫 健康手冊 · 如有疑問請諮詢診間醫師<br>
+  敬祝您平安健康 🙏
+</footer>
+
+<script>
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

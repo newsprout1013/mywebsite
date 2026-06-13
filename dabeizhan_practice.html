@@ -125,7 +125,19 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
   letter-spacing: .2em;
   color: #2a1a08;
   font-family: "Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;
-  line-height: 1.5;
+  line-height: 1.6;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .3rem;
+}
+.cover-title-sub {
+  font-size: 1.3rem;
+  letter-spacing: .45em;
+  color: #5a4530;
+  font-weight: 700;
+  padding-left: .45em;
 }
 .cover-author {
   font-size: .88rem;
@@ -227,7 +239,13 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 }
 
 /* wakelock */
-#wl{font-size:.6rem;padding:.1rem .3rem;border-radius:2px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-family:sans-serif;flex-shrink:0;}
+#wl{
+  font-size:.62rem;padding:.15rem .45rem;border-radius:2px;
+  background:rgba(255,255,255,.15);color:rgba(255,255,255,.75);
+  font-family:sans-serif;flex-shrink:0;cursor:pointer;
+  border:1px solid rgba(255,255,255,.25);
+  user-select:none;
+}
 </style>
 </head>
 <body>
@@ -237,7 +255,7 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
   <span id="section-label"></span>
   <span id="step-counter"></span>
   <div id="progress-wrap"><div id="progress-bar"></div></div>
-  <span id="wl">💡</span>
+  <span id="wl" onclick="toggleWakeLock()" title="點擊切換螢幕常亮">💡</span>
 </div>
 
 <div id="slide-area"></div>
@@ -499,7 +517,7 @@ function makeSlide(i) {
         <div class="cover-inner">
           <div class="cover-divider-thin"></div>
           <div class="cover-title-wrap">
-            <div class="cover-title">千手眼大悲心咒行法</div>
+            <div class="cover-title">千手眼大悲心咒<span class="cover-title-sub">行法</span></div>
           </div>
           <div class="cover-divider-thin"></div>
           <div class="cover-author">四明沙門知禮集</div>
@@ -587,18 +605,61 @@ area.addEventListener('touchend',   e => {
   if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
 }, {passive:true});
 
-// wake lock
-(async () => {
+// ── WAKE LOCK ──
+let wakeLockSentinel = null;
+const wlBtn = document.getElementById('wl');
+
+function setWlStatus(state) {
+  if (state === 'on')      { wlBtn.textContent = '💡 常亮中'; wlBtn.style.background = 'rgba(255,220,100,.25)'; }
+  else if (state === 'off'){ wlBtn.textContent = '💡 常亮'; wlBtn.style.background = 'rgba(255,255,255,.15)'; }
+  else if (state === 'err'){ wlBtn.textContent = '💡 需HTTPS'; wlBtn.style.background = 'rgba(255,100,100,.25)'; wlBtn.title = '螢幕常亮需在 HTTPS 網頁開啟（如 GitHub Pages），直接開啟 html 檔案不支援'; }
+  else if (state === 'no') { wlBtn.textContent = '💡 不支援'; wlBtn.style.background = 'rgba(150,150,150,.25)'; wlBtn.title = '此瀏覽器不支援螢幕常亮功能'; }
+}
+
+async function requestWakeLock() {
   try {
-    if ('wakeLock' in navigator) {
-      await navigator.wakeLock.request('screen');
-      document.getElementById('wl').textContent = '💡常亮';
+    wakeLockSentinel = await navigator.wakeLock.request('screen');
+    setWlStatus('on');
+    wakeLockSentinel.addEventListener('release', () => {
+      wakeLockSentinel = null;
+      setWlStatus('off');
+    });
+  } catch(e) {
+    wakeLockSentinel = null;
+    // SecurityError = not HTTPS
+    if (e.name === 'SecurityError' || location.protocol === 'file:') {
+      setWlStatus('err');
+    } else {
+      setWlStatus('off');
     }
-  } catch(e) {}
-})();
-document.addEventListener('visibilitychange', async () => {
-  if (document.visibilityState === 'visible') {
-    try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch(e) {}
+  }
+}
+
+async function toggleWakeLock() {
+  if (!('wakeLock' in navigator)) { setWlStatus('no'); return; }
+  if (wakeLockSentinel) {
+    await wakeLockSentinel.release();
+    // status updated by 'release' event above
+  } else {
+    await requestWakeLock();
+  }
+}
+
+// auto-request on load
+if ('wakeLock' in navigator) {
+  if (location.protocol === 'file:') {
+    setWlStatus('err');
+  } else {
+    requestWakeLock();
+  }
+} else {
+  setWlStatus('no');
+}
+
+// re-acquire when tab becomes visible again
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && !wakeLockSentinel && location.protocol !== 'file:') {
+    if ('wakeLock' in navigator) requestWakeLock();
   }
 });
 

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>千手眼大悲心咒行法・修持</title>
+<style>
+:root{
+  --ink:#1a1108; --paper:#faf7f2; --dark:#3d2b0e;
+  --red:#8b3a1e; --redfg:#faf7f2; --muted:#6b5740;
+  --notebg:#f0e8d8; --rule:#c8b89a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:var(--paper);}
+body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;color:var(--ink);}
+
+/* ── TOP BAR ── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:52px;
+  background:var(--dark);color:var(--redfg);
+  display:flex;align-items:center;padding:0 1rem;gap:.75rem;z-index:100;
+}
+#section-label{font-size:.85rem;letter-spacing:.12em;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#progress-wrap{flex:0 0 80px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;}
+#progress-bar{height:100%;background:var(--redfg);border-radius:2px;transition:width .3s;}
+#menu-btn{background:none;border:none;color:var(--redfg);font-size:1.3rem;cursor:pointer;padding:.25rem;flex-shrink:0;}
+#step-counter{font-size:.72rem;opacity:.7;flex-shrink:0;}
+
+/* ── SLIDE AREA ── */
+#slide-area{
+  position:fixed;top:52px;bottom:56px;left:0;right:0;
+  overflow:hidden;
+}
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .2s;
+}
+.slide.hr{transform:translateX(100%);opacity:0;pointer-events:none;}
+.slide.hl{transform:translateX(-100%);opacity:0;pointer-events:none;}
+
+/* ── SLIDE CONTENT ── */
+.slide-inner{
+  flex:1;overflow-y:auto;
+  padding:1.2rem 1.4rem 1rem;
+  -webkit-overflow-scrolling:touch;
+  font-size:1.05rem;line-height:2.2;
+}
+.slide-inner::-webkit-scrollbar{width:3px;}
+.slide-inner::-webkit-scrollbar-thumb{background:var(--rule);border-radius:2px;}
+
+/* section label inside slide */
+.slide-sec{
+  font-size:.72rem;color:var(--muted);letter-spacing:.14em;
+  margin-bottom:.7rem;font-family:sans-serif;
+}
+
+/* ── INLINE ACTION BADGE ── */
+/* sits inside running text */
+.ab{
+  display:inline-block;
+  font-family:sans-serif;font-size:.7rem;font-weight:700;
+  letter-spacing:.05em;
+  padding:.05rem .4rem;
+  border-radius:3px;
+  vertical-align:middle;
+  margin:0 .18rem;
+  color:var(--redfg);
+  white-space:nowrap;
+  line-height:2;
+}
+.ab-bow  {background:#8b3a1e;}
+.ab-rise {background:#2b4a1e;}
+.ab-chant{background:#1a2e4a;}
+.ab-kneel{background:#4a3010;}
+.ab-info {background:#5a5040;}
+.ab-walk {background:#2a3d2a;}
+
+/* ── NOTE ── */
+.note{
+  font-size:.82rem;color:var(--muted);
+  border-left:2px solid var(--rule);
+  padding-left:.75rem;margin:.6rem 0;line-height:1.7;
+}
+
+/* ── CHANT BLOCK ── */
+.chant-wrap{
+  background:var(--notebg);border:1px solid var(--rule);
+  border-radius:6px;padding:.8rem 1rem;margin:.5rem 0;
+  font-size:1rem;line-height:2.1;
+}
+.chant-lbl{font-size:.72rem;color:var(--muted);letter-spacing:.12em;margin-bottom:.4rem;font-family:sans-serif;}
+
+/* ── VERSE ── */
+.verse{margin:.3rem 0 .3rem 0;}
+.vrow{display:flex;gap:.8rem;line-height:2.1;}
+.vc{color:var(--muted);flex:0 0 6.5em;}
+.vr{color:var(--ink);}
+
+/* ── TAP HINT ── */
+.tap-hint{
+  flex-shrink:0;
+  text-align:center;font-size:.78rem;color:var(--muted);
+  letter-spacing:.1em;padding:.45rem 0;
+  border-top:1px solid var(--rule);
+  background:var(--paper);
+}
+
+/* ── BOTTOM NAV ── */
+#bottomnav{
+  position:fixed;bottom:0;left:0;right:0;height:56px;
+  background:var(--paper);border-top:1px solid var(--rule);
+  display:flex;align-items:center;
+}
+#btn-prev,#btn-next{
+  height:100%;border:none;background:none;cursor:pointer;
+  color:var(--dark);font-size:1.5rem;padding:0 1.2rem;flex-shrink:0;
+}
+#btn-prev:disabled,#btn-next:disabled{color:var(--rule);}
+#center-tap{
+  flex:1;height:100%;border:none;background:none;cursor:pointer;
+  font-size:.8rem;color:var(--muted);letter-spacing:.1em;
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+}
+#center-tap:active,#btn-prev:active,#btn-next:active{background:var(--notebg);}
+
+/* ── MENU ── */
+#menu-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;
+  display:none;align-items:flex-start;justify-content:flex-end;
+}
+#menu-overlay.open{display:flex;}
+#menu-panel{
+  background:var(--paper);width:78vw;max-width:320px;height:100%;
+  overflow-y:auto;padding:1rem 0 2rem;box-shadow:-4px 0 16px rgba(0,0,0,.2);
+}
+.menu-title{font-size:.78rem;color:var(--muted);letter-spacing:.15em;padding:.5rem 1.2rem;border-bottom:1px solid var(--rule);margin-bottom:.4rem;}
+.menu-item{
+  display:block;width:100%;text-align:left;background:none;border:none;
+  padding:.7rem 1.2rem;font-size:.95rem;font-family:inherit;color:var(--ink);
+  cursor:pointer;border-bottom:1px solid var(--notebg);letter-spacing:.05em;
+}
+.menu-item:active,.menu-item.active{background:var(--notebg);}
+.menu-num{
+  display:inline-block;background:var(--dark);color:var(--redfg);
+  font-size:.68rem;padding:.08rem .35rem;border-radius:2px;margin-right:.5rem;font-family:sans-serif;
+}
+
+/* wakelock */
+#wl{font-size:.6rem;padding:.1rem .3rem;border-radius:2px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-family:sans-serif;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <button id="menu-btn" onclick="toggleMenu()">☰</button>
+  <span id="section-label"></span>
+  <span id="step-counter"></span>
+  <div id="progress-wrap"><div id="progress-bar"></div></div>
+  <span id="wl">💡</span>
+</div>
+
+<div id="slide-area"></div>
+
+<div id="bottomnav">
+  <button id="btn-prev" onclick="go(-1)">‹</button>
+  <button id="center-tap" onclick="go(1)">點此繼續 ›</button>
+  <button id="btn-next" onclick="go(1)">›</button>
+</div>
+
+<div id="menu-overlay" onclick="if(event.target===this)closeMenu()">
+  <div id="menu-panel">
+    <div class="menu-title">跳至儀軌</div>
+  </div>
+</div>
+
+<script>
+// 行內動作標籤的快捷函式
+const bow   = t => `<span class="ab ab-bow">拜↓</span>${t?'<span class="ab ab-bow">'+t+'</span>':''}`;
+const rise  = t => `<span class="ab ab-rise">起↑</span>${t?'<span class="ab ab-rise">'+t+'</span>':''}`;
+const ask   = ()=> `<span class="ab ab-rise">問訊</span>`;
+const kneel = t => `<span class="ab ab-kneel">${t||'長跪合掌'}</span>`;
+const info  = t => `<span class="ab ab-info">${t}</span>`;
+const chant = t => `<span class="ab ab-chant">${t}</span>`;
+const walk  = t => `<span class="ab ab-walk">${t}</span>`;
+const note  = t => `<div class="note">${t}</div>`;
+const stand = ()=> `<span class="ab ab-rise">起身</span>`;
+
+const CHANT = `南無喝囉怛那哆囉夜耶。南無阿唎耶。婆盧羯帝爍缽囉耶。菩提薩埵婆耶。摩訶薩埵婆耶。摩訶迦盧尼迦耶。唵。薩皤囉罰曳。數怛那怛寫。南無悉吉慄埵伊蒙阿唎耶。婆盧吉帝室佛囉楞馱婆。南無那囉謹墀。醯利摩訶皤哆沙咩。薩婆阿他豆輸朋。阿逝孕。薩婆薩哆那摩婆薩哆那摩婆伽。摩罰特豆。怛姪他。唵。阿婆盧醯。盧迦帝。迦羅帝。夷醯唎。摩訶菩提薩埵。薩婆薩婆。摩囉摩囉。摩醯摩醯唎馱孕。俱盧俱盧羯蒙。度盧度盧罰闍耶帝。摩訶罰闍耶帝。陀囉陀囉。地唎尼。室佛囉耶。遮囉遮囉。摩麼罰摩囉。穆帝隸。伊醯伊醯。室那室那。阿囉參佛囉舍利。罰沙罰參。佛囉舍耶。呼盧呼盧摩囉。呼盧呼盧醯利。娑囉娑囉。悉唎悉唎。蘇嚧蘇嚧。菩提夜菩提夜。菩馱夜菩馱夜。彌帝唎夜。那囉謹墀。地唎瑟尼那。波夜摩那。娑婆訶。悉陀夜。娑婆訶。摩訶悉陀夜。娑婆訶。悉陀喻藝。室皤囉耶。娑婆訶。那囉謹墀。娑婆訶。摩囉那囉。娑婆訶。悉囉僧阿穆佉耶。娑婆訶。娑婆摩訶阿悉陀夜。娑婆訶。者吉囉阿悉陀夜。娑婆訶。波陀摩羯悉哆夜。娑婆訶。那囉謹墀皤伽囉耶。娑婆訶。摩婆利勝羯囉夜。娑婆訶。南無喝囉怛那哆囉夜耶。南無阿唎耶。婆盧吉帝。爍皤囉夜。娑婆訶。唵。悉殿都。漫多囉。跋陀耶。娑婆訶。`;
+
+// ── STEP 資料：每個 step 是一個畫面，body 是 innerHTML，動作標籤嵌在文字中 ──
+const STEPS = [
+
+  // ════════ 四 修供養 ════════
+  { sec:'四　修供養',
+    body: `南無大悲觀世音菩薩${info('（三稱三拜）')}<br><br>
+當念一切三寶。及法界眾生。與我身心無二無別。諸佛已悟眾生尚迷。我為眾生翻迷障故。禮事三寶。作是念已口當唱言。<br><br>
+一切恭謹。一心頂禮十方常住三寶。${bow()}${rise()}${ask()}` },
+
+  { sec:'四　修供養',
+    body: `是諸眾等各各胡跪。${kneel('跪')}<br><br>
+嚴持香華如法供養。<br><br>
+願此香華雲遍滿十方界。一一諸佛土無量香莊嚴。具足菩薩道成就如來香（我此香華遍十方。以為微妙光明臺。諸天音樂天寶香。諸天肴膳天寶衣。不可思議妙法塵。一一塵出一切塵。一一塵出一切法。旋轉無閡互莊嚴。遍至十方三寶前。十方法界三寶前。悉有我身修供養。一一皆悉遍法界。彼彼無雜無障閡。盡未來際作佛事。普熏法界諸眾生。蒙熏皆發菩提心。同入無生證佛智。）<br><br>
+供養已${rise()}一切恭謹。${bow()}${rise()}${ask()}` },
+
+  // ════════ 五 請三寶諸天 ════════
+  { sec:'五　請三寶諸天',
+    body: `${kneel()}<br><br>
+一心奉請 南無本師釋迦牟尼世尊。<br>
+一心奉請 南無西方極樂世界阿彌陀世尊。<br>
+一心奉請 南無過去無量億劫千光王靜住世尊。<br>
+一心奉請 南無過去九十九億殑伽沙諸佛世尊。<br>
+一心奉請 南無過去無量劫正法明世尊。<br>
+一心奉請 南無十方一切諸佛世尊。<br>
+一心奉請 南無賢劫千佛。三世一切諸佛世尊。<br>
+一心奉請 南無廣大圓滿無閡大悲心大陀羅尼神妙章句。<br>
+${note('想云：法性如空不可見。常住法寶難思議。我今三業如法請。唯願顯現受供養。')}<br>
+一心奉請 南無觀音所說諸陀羅尼。及十方三世一切尊法。<br>
+一心奉請 南無千手千眼大慈大悲觀世音自在菩薩摩訶薩。<br>
+一心奉請 南無大勢至菩薩摩訶薩。<br>
+一心奉請 南無總持王菩薩摩訶薩。<br>
+一心奉請 南無日光菩薩。月光菩薩摩訶薩。<br>
+一心奉請 南無寶王菩薩。藥王菩薩。藥上菩薩摩訶薩。<br>
+一心奉請 南無華嚴菩薩。大莊嚴菩薩。寶藏菩薩摩訶薩。<br>
+一心奉請 南無無德藏菩薩。金剛藏菩薩。虛空藏菩薩摩訶薩。<br>
+一心奉請 南無彌勒菩薩。普賢菩薩。文殊師利菩薩摩訶薩。<br>
+一心奉請 南無十方三世一切菩薩摩訶薩。<br>
+一心奉請 南無摩訶迦葉。無量無數大聲聞僧。<br><br>
+一心奉請。善吒梵摩瞿婆伽天子。護世四王。天龍八部童目天女。虛空神。江海神。泉源神。河沼神。藥草樹林神。舍宅神。水神火神。風神土神。山神地神。宮殿神等。及守護持咒。一切天龍鬼神各及眷屬。${info('頂禮三寶')}${bow()}${rise()}${info('（以上奉請三次）')}` },
+
+  { sec:'五　請三寶諸天',
+    body: `唯願釋迦本師。彌陀慈父千光王靜住如來。十方三世一切諸佛。不移本際平等慈熏。來降道場證我行法。${bow()}${rise()}<br><br>
+廣大圓滿無閡大悲心。總持祕要顯現道場。受我供養。${bow()}${rise()}<br><br>
+千手千眼觀世音菩薩摩訶薩。乘本願力來到我前。神咒加持頓消三障。大勢至菩薩總持王等諸大菩薩。摩訶迦葉諸大聲聞。同運慈悲俱時來降。${bow()}${rise()}<br><br>
+梵釋四王諸天八部。隨我請來。堅守道場擁護持咒。卻諸魔障示現吉祥。令我所修不違本願。${bow()}${rise()}${ask()}
+${note('在家每日連續拜懺，只需第一天「奉請」；若中斷需重新「奉請」。')}` },
+
+  // ════════ 六 讚歎伸誠 ════════
+  { sec:'六　讚歎伸誠',
+    body: `${kneel()}<br><br>
+南無過去正法明如來。現前觀世音菩薩。成妙功德具大慈悲。於一身心現千手眼。照見法界護持眾生。令發廣大道心。教持圓滿神咒。永離惡道得生佛前。無聞重愆纏身惡疾。莫能救濟悉使消除。三昧辯才現生求願。皆令果遂決定無疑。能使速獲三乘。早登佛地。威神之力歎莫能窮。故我一心歸命頂禮。${bow()}${rise()}${ask()}
+${note('第二支香以後不需再請，直接接「讚歎伸誠」。')}` },
+
+  // ════════ 七 作禮 ════════
+  { sec:'七　作禮',
+    body: `<strong>一心頂禮：</strong>
+${note('禮佛想云：能禮所禮性空寂。感應道交難思議。我此道場如帝珠。釋迦如來影現中。我身影現釋迦前。頭面接足歸命禮。<br>至禮阿彌陀時改云：即云阿彌陀佛影現中云云。<br>禮法想云：真空法性如虛空。常住法寶難思議。我身影現法寶前。一心如法歸命禮。<br>禮僧準上禮佛。但改為菩薩等。唯禮觀音云：為求減障接足禮。此是懺悔主故。')}<br>
+一心頂禮　本師釋迦牟尼世尊${bow()}${rise()}<br>
+一心頂禮　西方極樂世界阿彌陀世尊${bow()}${rise()}<br>
+一心頂禮　過去無量億劫千光王靜住世尊${bow()}${rise()}<br>
+一心頂禮　過去九十九億殑伽沙諸佛世尊${bow()}${rise()}<br>
+一心頂禮　過去無量劫正法明世尊${bow()}${rise()}<br>
+一心頂禮　十方一切諸佛世尊${bow()}${rise()}<br>
+一心頂禮　賢劫千佛。三世一切諸佛世尊${bow()}${rise()}` },
+
+  { sec:'七　作禮',
+    body: `一心頂禮　廣大圓滿無礙大悲心大陀羅尼神妙章句${info('（三稱三拜）')}<br>
+一心頂禮　觀音所說諸陀羅尼。及十方三世一切尊法${bow()}${rise()}<br><br>
+一心頂禮　千手眼大慈大悲觀世音自在菩薩摩訶薩${info('（三稱三拜）')}<br>
+一心頂禮　大勢至菩薩摩訶薩${bow()}${rise()}<br>
+一心頂禮　總持王菩薩摩訶薩${bow()}${rise()}<br>
+一心頂禮　日光菩薩。月光菩薩摩訶薩${bow()}${rise()}<br>
+一心頂禮　寶王菩薩。藥王菩薩。藥上菩薩摩訶薩${bow()}${rise()}<br>
+一心頂禮　華嚴菩薩。大莊嚴菩薩。寶藏菩薩摩訶薩${bow()}${rise()}<br>
+一心頂禮　無德藏菩薩。金剛藏菩薩。虛空藏菩薩摩訶薩${bow()}${rise()}<br>
+一心頂禮　彌勒菩薩。普賢菩薩。文殊師利菩薩摩訶薩${bow()}${rise()}<br>
+一心頂禮　十方三世一切菩薩摩訶薩${bow()}${rise()}<br>
+一心頂禮　摩訶迦葉。無量無數大聲聞僧${bow()}${rise()}<br><br>
+${info('代禮')} 一心代為善吒梵摩瞿婆伽天子。護世四王。天龍八部童目天女。虛空神。江海神。泉源神。河沼神。藥草樹林神。舍宅神。水神火神。風神土神。山神地神。宮殿神等。及守護持咒。一切天龍鬼神各及眷屬，頂禮三寶。${bow()}${rise()}` },
+
+  // ════════ 八 發願持咒 ════════
+  { sec:'八　發願持咒',
+    body: `${kneel()}<br><br>
+經云：若有比丘比丘尼。優婆塞優婆夷。童男童女。欲誦持者。於諸眾生起大慈悲心。先當從我發如是願。<br><br>
+南無大悲觀世音${bow()} 願我速知一切法${stand()}<br>
+南無大悲觀世音${bow()} 願我早得智慧眼${stand()}<br>
+南無大悲觀世音${bow()} 願我速度一切眾${stand()}<br>
+南無大悲觀世音${bow()} 願我早得善方便${stand()}<br>
+南無大悲觀世音${bow()} 願我速乘般若船${stand()}<br>
+南無大悲觀世音${bow()} 願我早得越苦海${stand()}<br>
+南無大悲觀世音${bow()} 願我速得戒定道${stand()}<br>
+南無大悲觀世音${bow()} 願我早登涅槃山${stand()}<br>
+南無大悲觀世音${bow()} 願我速會無為舍${stand()}<br>
+南無大悲觀世音${bow()} 願我早同法性身${stand()}<br><br>
+<div class="verse">
+<div class="vrow"><span class="vc">我若向刀山</span><span class="vr">刀山自摧折</span></div>
+<div class="vrow"><span class="vc">我若向火湯</span><span class="vr">火湯自枯竭</span></div>
+<div class="vrow"><span class="vc">我若向地獄</span><span class="vr">地獄自消滅</span></div>
+<div class="vrow"><span class="vc">我若向餓鬼</span><span class="vr">餓鬼自飽滿</span></div>
+<div class="vrow"><span class="vc">我若向修羅</span><span class="vr">惡心自調伏</span></div>
+<div class="vrow"><span class="vc">我若向畜生</span><span class="vr">自得大智慧</span></div>
+</div><br>
+南無觀世音菩薩${info('（十稱）')}<br>南無阿彌陀佛${info('（十稱）')}` },
+
+  { sec:'八　發願持咒',
+    body: `觀世音菩薩白佛言世尊。若諸眾生。誦持大悲神咒。墮三惡道者。我誓不成正覺。誦持大悲神咒。若不生諸佛國者。我誓不成正覺。誦持大悲神咒。若不得無量三昧辯才者。我誓不成正覺。誦持大悲神咒。於現在生中。一切所求若不果遂者。不得為大悲心陀羅尼也。乃至說是語已。於眾會前合掌正住。於諸眾生起大悲心開顏含笑。即說如是廣大圓滿無閡大悲心大陀羅尼神妙章句。陀羅尼曰。<br><br>
+<div class="chant-wrap"><div class="chant-lbl">〈大悲咒〉持誦（建議 3、5、7 或 14 遍，可自訂）</div>${CHANT}</div><br>
+觀世音菩薩說此咒已。大地六變震動。天雨寶華繽紛而下。十方諸佛悉皆歡喜。天魔外道恐怖毛豎。一切眾會皆獲果證。或得須陀洹果。或得斯陀含果。或得阿那含果。或得阿羅漢果者。或得一地二地三四五地乃至十地者。無量眾生發菩提心。` },
+
+  // ════════ 九 懺悔 ════════
+  { sec:'九　懺悔',
+    body: `我及眾生${bow('頭碰地')} 無始常為三業六根。重罪所障。不見諸佛不知出要。但順生死不知妙理。我今雖知由與眾生。同為一切重罪所障。今對觀音十方佛前。普為眾生歸命懺悔。唯願加護令障消滅。${rise()}${ask()}
+${note('或整段念完後，一次拜下、起身、問訊。')}` },
+
+  { sec:'九　懺悔',
+    body: `${kneel()}<br><br>
+普為四恩三有。法界眾生。悉願斷除三障。歸命懺悔。<br><br>
+我與眾生${bow('頭碰地')} 無始來今。由愛見故。內計我人。外加惡友。不隨喜他一毫之善。唯遍三業廣造眾罪。事雖不廣惡心遍布。晝夜相續無有間斷。覆藏過失不欲人知。不畏惡道。無慚無愧。撥無因果。故於今日。深信因果。生重慚愧。生大怖畏。發露懺悔。斷相續心。發菩提心。斷惡修善。勤策三業翻昔重過。隨喜凡聖一毫之善。念十方佛有大福慧。能救拔我及諸眾生。從二死海置三德岸。從無始來不知諸法。本性空寂廣造眾惡。今知空寂為求菩提。為眾生故廣修諸善。遍斷眾惡。唯願觀音慈悲攝受。${rise()}${ask()}
+${note('或整段念完後，一次拜下、起身、問訊。')}` },
+
+  { sec:'九　懺悔',
+    body: `${kneel()}<br><br>
+至心懺悔${bow()} 比丘（某甲）等${stand()}。與法界一切眾生。現前一心。本具千法。皆有神力及以智明。上等佛心。下同含識。無始闇動。障此靜明。觸事昏迷。舉心緣著。平等法中起自他想。愛見為本身口為緣。於諸有中無罪不造。十惡五逆謗法謗人。破戒破齋毀塔壞寺。偷僧祇物污淨梵行。侵損常住飲食財物。千佛出世不通懺悔。如是等罪無量無邊。捨茲形命合墮三塗。備嬰萬苦。復於現世眾惱交煎。或惡疾縈纏他緣逼迫。障於道法不得熏修。今遇<br><br>
+大${bow()}悲圓滿神咒。速能滅除${stand()}如是罪障。故於今日至心誦持。歸向。<br><br>
+觀${bow()}世音菩薩及十方大師${stand()}。發菩提心修真言行。與諸眾生發露眾罪。求乞懺悔畢竟消除。唯願。<br><br>
+大${bow()}悲觀世音菩薩摩訶薩。千手護持${stand()}千眼照見。令我等內外障緣寂滅。自他行願圓成。開本見知制諸魔外。三業精進修淨土因。至捨此身更無他趣。<br><br>
+決定得生${bow()}阿彌陀佛極樂世界${stand()}。親承供養大悲觀音。具諸總持廣度群品。皆出苦輪同到智地。<br><br>
+懺悔發願已${rise('起立')} 歸命禮三寶${bow()}${rise()}${ask()}` },
+
+  // ════════ 旋繞 ════════
+  { sec:'旋繞',
+    body: `${walk('向右旋繞三遍或七遍')}<br><br>
+欲旋繞時，先須正立想此道場如法界。十方三寶畟塞虛空。以次迴身旋繞法座。十方三寶心性寂滅。影現十方心想如夢。梵響如響勿令心散。口唱云：<br><br>
+南無十方佛。南無十方法。南無十方僧。<br>
+南無本師釋迦牟尼佛。南無阿彌陀佛。<br>
+南無千光王靜住佛。<br>
+南無廣大圓滿無閡大悲心大陀羅尼。<br>
+南無千手千眼觀世音菩薩。<br>
+南無大勢至菩薩。南無總持王菩薩。${info('或三稱或七稱')}<br><br>
+（旋遶已，還至像前。接三自歸。）` },
+
+  // ════════ 三自歸 ════════
+  { sec:'三自歸',
+    body: `自歸依佛。當願眾生　體解大道　發無上心。${bow()}${rise()}<br><br>
+自歸依法。當願眾生　深入經藏　智慧如海。${bow()}${rise()}<br><br>
+自歸依僧。當願眾生　統理大眾　一切無閡　和南聖眾。${bow()}${rise()}${ask()}
+${note('若三皈依後還有三稱觀世音菩薩，就不用念「和南聖眾」。')}<br>
+南無大悲觀世音菩薩${info('（三稱三拜）')}` },
+
+  // ════════ 十 禪觀 ════════
+  { sec:'十　禪觀',
+    body: `不需穿著海青。以持〈大悲咒〉為主軸，可選擇以下方式交替進行：<br><br>
+${walk('經行持咒')} 邊走邊持〈大悲咒〉<br><br>
+${info('打坐')} 持咒7或10遍後，停下打坐片刻，讓身心歸零<br><br>
+${bow('拜佛持咒')} 邊拜邊持咒（慢速持咒，身心更清楚放鬆）
+${note('在家實踐建議分三段：<br>①【早起後】修供養→發願持咒<br>②【隨時】持〈大悲咒〉<br>③【睡前洗澡後】修懺悔')}` },
+];
+
+// ── RENDER ENGINE ──
+let cur = 0;
+const area = document.getElementById('slide-area');
+
+function makeSlide(i) {
+  const s = STEPS[i];
+  const d = document.createElement('div');
+  d.className = 'slide' + (i > 0 ? ' hr' : '');
+  d.dataset.idx = i;
+  d.innerHTML = `
+    <div class="slide-inner">
+      <div class="slide-sec">${s.sec}</div>
+      ${s.body}
+    </div>
+    <div class="tap-hint">繼續 ›</div>`;
+  return d;
+}
+
+function init() {
+  STEPS.forEach((s,i) => area.appendChild(makeSlide(i)));
+  buildMenu();
+  update();
+}
+
+function getEl(i) { return area.querySelector('.slide[data-idx="'+i+'"]'); }
+
+function go(dir) {
+  const next = cur + dir;
+  if (next < 0 || next >= STEPS.length) return;
+  getEl(cur).classList.add(dir > 0 ? 'hl' : 'hr');
+  const n = getEl(next);
+  n.classList.remove('hr','hl');
+  cur = next;
+  n.querySelector('.slide-inner').scrollTop = 0;
+  update();
+}
+
+function jumpTo(i) {
+  getEl(cur).classList.add(i > cur ? 'hl' : 'hr');
+  const n = getEl(i);
+  n.classList.remove('hr','hl');
+  cur = i;
+  n.querySelector('.slide-inner').scrollTop = 0;
+  update();
+}
+
+function update() {
+  const s = STEPS[cur];
+  document.getElementById('section-label').textContent = s.sec;
+  document.getElementById('step-counter').textContent = (cur+1)+'/'+STEPS.length;
+  document.getElementById('progress-bar').style.width = Math.round((cur+1)/STEPS.length*100)+'%';
+  document.getElementById('btn-prev').disabled = cur === 0;
+  document.getElementById('btn-next').disabled = cur === STEPS.length-1;
+  document.querySelectorAll('.menu-item').forEach(el =>
+    el.classList.toggle('active', +el.dataset.idx === cur));
+}
+
+function buildMenu() {
+  const panel = document.getElementById('menu-panel');
+  const seen = new Set();
+  STEPS.forEach((s,i) => {
+    if (seen.has(s.sec)) return;
+    seen.add(s.sec);
+    const b = document.createElement('button');
+    b.className = 'menu-item';
+    b.dataset.idx = i;
+    const [num,...rest] = s.sec.split('　');
+    b.innerHTML = `<span class="menu-num">${num}</span>${rest.join('　')||s.sec}`;
+    b.onclick = () => { jumpTo(i); closeMenu(); };
+    panel.appendChild(b);
+  });
+}
+
+function toggleMenu() { document.getElementById('menu-overlay').classList.toggle('open'); }
+function closeMenu()  { document.getElementById('menu-overlay').classList.remove('open'); }
+
+// swipe
+let tx = 0;
+area.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+area.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+}, {passive:true});
+
+// wake lock
+(async () => {
+  try {
+    if ('wakeLock' in navigator) {
+      await navigator.wakeLock.request('screen');
+      document.getElementById('wl').textContent = '💡常亮';
+    }
+  } catch(e) {}
+})();
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible') {
+    try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch(e) {}
+  }
+});
+
+init();
+</script>
+</body>
+</html>

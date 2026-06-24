@@ -2,6 +2,22 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
+<script>
+// 若偵測到是在 LINE 內建瀏覽器中開啟，嘗試自動跳轉到外部瀏覽器
+// （全螢幕、橫向鎖定等功能在 LINE 內建瀏覽器中支援度不佳）
+(function(){
+  try{
+    var ua = navigator.userAgent || "";
+    var isLine = /Line/i.test(ua);
+    var alreadyTried = window.location.href.indexOf("openExternalBrowser") > -1;
+    if(isLine && !alreadyTried){
+      var url = window.location.href;
+      var sep = url.indexOf("?") > -1 ? "&" : "?";
+      window.location.href = url + sep + "openExternalBrowser=1";
+    }
+  }catch(e){}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>助念小工具</title>
 <style>
@@ -26,6 +42,32 @@
     background:var(--bg);
     font-family:-apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Heiti TC", sans-serif;
     color:var(--ink);
+  }
+
+  .line-banner{
+    display:none;
+    position:fixed;
+    top:0; left:0; right:0;
+    background:#3a2c12;
+    color:#f0c875;
+    border-bottom:1px solid #5a4520;
+    padding:10px 14px;
+    font-size:0.8rem;
+    line-height:1.5;
+    z-index:200;
+    align-items:center;
+    gap:10px;
+  }
+  .line-banner.show{ display:flex; }
+  .line-banner span{ flex:1; }
+  .line-banner button{
+    flex-shrink:0;
+    background:none;
+    border:none;
+    color:#f0c875;
+    font-size:1rem;
+    cursor:pointer;
+    padding:4px 8px;
   }
 
   #setupScreen, #mainScreen{
@@ -572,6 +614,11 @@
 </head>
 <body>
 
+  <div class="line-banner" id="lineBanner">
+    <span>您目前在 LINE 內建瀏覽器中，全螢幕／橫向功能可能無法使用。建議點選右下角選單，選擇「使用預設瀏覽器開啟」。</span>
+    <button id="lineBannerClose" aria-label="關閉提示">✕</button>
+  </div>
+
   <!-- 設定頁 -->
   <div id="setupScreen">
     <h1 class="setup-title">助念小工具</h1>
@@ -713,6 +760,20 @@
 <script>
 (function(){
   "use strict";
+
+  // ---- 偵測是否仍在 LINE 內建瀏覽器中（自動跳轉未成功時顯示提示）----
+  (function(){
+    var ua = navigator.userAgent || "";
+    var isLine = /Line/i.test(ua);
+    if(isLine){
+      var banner = document.getElementById("lineBanner");
+      var closeBtn = document.getElementById("lineBannerClose");
+      banner.classList.add("show");
+      closeBtn.addEventListener("click", function(){
+        banner.classList.remove("show");
+      });
+    }
+  })();
 
   var STORAGE_KEY = "zhunian_clock_settings";
 

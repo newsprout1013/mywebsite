@@ -75,7 +75,7 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 
 /* ── SLIDE AREA ── */
 #slide-area{
-  position:fixed;top:52px;bottom:56px;left:0;right:0;
+  position:fixed;top:52px;bottom:72px;left:0;right:0;
   overflow:hidden;
 }
 .slide{
@@ -310,7 +310,7 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 
 /* ── PER-PAGE READING PROGRESS ── */
 #page-progress{
-  position:fixed;top:52px;bottom:56px;right:0;width:3px;
+  position:fixed;top:52px;bottom:72px;right:0;width:3px;
   background:rgba(0,0,0,.05);z-index:90;display:none;
 }
 #page-progress-fill{
@@ -324,21 +324,33 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 
 /* ── BOTTOM NAV ── */
 #bottomnav{
-  position:fixed;bottom:0;left:0;right:0;height:56px;
+  position:fixed;bottom:0;left:0;right:0;height:72px;
   background:var(--paper);border-top:1px solid var(--rule);
   display:flex;align-items:center;
 }
 #btn-prev,#btn-next{
   height:100%;border:none;background:none;cursor:pointer;
-  color:var(--dark);font-size:1.5rem;padding:0 1.2rem;flex-shrink:0;
+  color:var(--dark);font-size:1.3rem;padding:0 .6rem;flex-shrink:0;
+  width:40px;
 }
 #btn-prev:disabled,#btn-next:disabled{color:var(--rule);}
 #center-tap{
   flex:1;height:100%;border:none;background:none;cursor:pointer;
-  font-size:.8rem;color:var(--muted);letter-spacing:.1em;
+  font-size:1rem;color:var(--muted);letter-spacing:.1em;
   display:flex;align-items:center;justify-content:center;gap:.4rem;
 }
 #center-tap:active,#btn-prev:active,#btn-next:active{background:var(--notebg);}
+
+/* ── 拜懺模式 ── */
+#prostrate-btn{
+  font-size:.62rem;padding:.15rem .45rem;border-radius:2px;
+  background:rgba(255,255,255,.15);color:rgba(255,255,255,.75);
+  font-family:sans-serif;flex-shrink:0;cursor:pointer;
+  border:1px solid rgba(255,255,255,.25);
+  user-select:none;
+}
+#prostrate-btn.on{background:rgba(255,180,60,.35);color:#fff;border-color:rgba(255,180,60,.6);}
+body.prostrate #slide-area{-webkit-tap-highlight-color:transparent;}
 
 /* ── MENU ── */
 #menu-overlay{
@@ -383,6 +395,7 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
     <button class="fs-btn" onclick="setFs(-1)" id="fs-down">A⁻</button>
     <button class="fs-btn" onclick="setFs(1)"  id="fs-up">A⁺</button>
   </div>
+  <span id="prostrate-btn" onclick="toggleProstrate()" title="拜懺模式：點任意處翻頁">🙏 拜懺</span>
   <span id="wl" onclick="toggleWakeLock()" title="點擊切換螢幕常亮">💡</span>
 </div>
 
@@ -891,6 +904,45 @@ function toggleQa(id) {
   updateScrollHints();
 }
 
+// ── 拜懺模式：點經文區任意處 = smartContinue ──
+let prostrateMode = false;
+try { prostrateMode = localStorage.getItem('dabeizhan-prostrate') === '1'; } catch(e) {}
+
+function applyProstrate() {
+  const btn = document.getElementById('prostrate-btn');
+  btn.classList.toggle('on', prostrateMode);
+  btn.textContent = prostrateMode ? '🙏 拜懺中' : '🙏 拜懺';
+  document.body.classList.toggle('prostrate', prostrateMode);
+}
+
+// 拜懺模式：偵測「輕點」（非捲動拖曳），點經文區任何位置 = smartContinue
+let pTx = 0, pTy = 0, pTt = 0;
+area.addEventListener('touchstart', e => {
+  pTx = e.touches[0].clientX; pTy = e.touches[0].clientY; pTt = Date.now();
+}, {passive:true});
+area.addEventListener('touchend', e => {
+  if (!prostrateMode) return;
+  const dx = Math.abs(e.changedTouches[0].clientX - pTx);
+  const dy = Math.abs(e.changedTouches[0].clientY - pTy);
+  const dt = Date.now() - pTt;
+  if (dx < 12 && dy < 12 && dt < 300) {
+    if (e.target.closest('.qa-q')) return;
+    smartContinue();
+  }
+}, {passive:true});
+area.addEventListener('click', e => {
+  if (!prostrateMode) return;
+  if (e.target.closest('.qa-q')) return;
+  smartContinue();
+});
+
+function toggleProstrate() {
+  prostrateMode = !prostrateMode;
+  try { localStorage.setItem('dabeizhan-prostrate', prostrateMode ? '1' : '0'); } catch(e) {}
+  applyProstrate();
+}
+
+applyProstrate();
 
 const FS_CLASSES = ['fs-s', '', 'fs-large', 'fs-xlarge', 'fs-xxlarge'];
 const FS_LABELS  = ['最小', '標準', '大', '特大', '超大'];

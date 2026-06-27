@@ -921,21 +921,7 @@ function applyProstrate() {
   document.body.classList.toggle('prostrate', prostrateMode);
 }
 
-// 拜懺模式：偵測「輕點」（非捲動拖曳），點經文區任何位置 = smartContinue
-let pTx = 0, pTy = 0, pTt = 0;
-area.addEventListener('touchstart', e => {
-  pTx = e.touches[0].clientX; pTy = e.touches[0].clientY; pTt = Date.now();
-}, {passive:true});
-area.addEventListener('touchend', e => {
-  if (!prostrateMode) return;
-  const dx = Math.abs(e.changedTouches[0].clientX - pTx);
-  const dy = Math.abs(e.changedTouches[0].clientY - pTy);
-  const dt = Date.now() - pTt;
-  if (dx < 12 && dy < 12 && dt < 300) {
-    if (e.target.closest('.qa-q')) return;
-    smartContinue();
-  }
-}, {passive:true});
+// 拜懺模式：點經文區任何位置 = smartContinue（只用 click，避免 touchend+click 雙觸發）
 area.addEventListener('click', e => {
   if (!prostrateMode) return;
   if (e.target.closest('.qa-q')) return;

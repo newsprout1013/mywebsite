@@ -55,6 +55,30 @@ body.fs-xxlarge {
   --fs-menu: 1.42rem;
   --lh: 2.5;
 }
+body.fs-3xl {
+  --fs: 2.0rem;
+  --fs-sm: 1.48rem;
+  --fs-xs: 1.2rem;
+  --fs-chant: 1.82rem;
+  --fs-menu: 1.6rem;
+  --lh: 2.6;
+}
+body.fs-4xl {
+  --fs: 2.3rem;
+  --fs-sm: 1.7rem;
+  --fs-xs: 1.38rem;
+  --fs-chant: 2.1rem;
+  --fs-menu: 1.82rem;
+  --lh: 2.7;
+}
+body.fs-5xl {
+  --fs: 2.6rem;
+  --fs-sm: 1.92rem;
+  --fs-xs: 1.55rem;
+  --fs-chant: 2.38rem;
+  --fs-menu: 2.05rem;
+  --lh: 2.8;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;background:var(--paper);}
 body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;color:var(--ink);}
@@ -936,7 +960,7 @@ function toggleProstrate() {
 
 applyProstrate();
 
-const FS_CLASSES = ['fs-s', '', 'fs-large', 'fs-xlarge', 'fs-xxlarge'];
+const FS_CLASSES = ['fs-s', '', 'fs-large', 'fs-xlarge', 'fs-xxlarge', 'fs-3xl', 'fs-4xl', 'fs-5xl'];
 const FS_LABELS  = ['最小', '標準', '大', '特大', '超大'];
 let fsLevel = 1;
 try { fsLevel = parseInt(localStorage.getItem('dabeizhan-fs') || '1'); } catch(e) {}

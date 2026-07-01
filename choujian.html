@@ -6,112 +6,194 @@
 <title>佛法法語抽籤</title>
 <style>
 :root {
-  --ink:#1a1108; --paper:#faf7f2; --rule:#c8b89a; --dark:#3d2b0e;
-  --red:#8b3a1e; --redfg:#faf7f2; --muted:#6b5740; --notebg:#f0e8d8;
+  --maroon:#5c1414; --maroon-deep:#3a0d0d;
+  --gold:#b8892c; --gold-light:#e9d29b;
+  --cream:#fbf3e2; --paper:#fffbf1;
+  --ink:#2a1a0e; --muted:#7a6650;
 }
 * { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
 body {
-  background:var(--paper); color:var(--ink);
-  font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;
-  font-size:18px; line-height:1.9;
+  background:var(--cream); color:var(--ink);
+  font-family:"Noto Serif TC","Source Han Serif TC","PingFang TC","微軟正黑體",serif;
+  font-size:20px; line-height:2;
   min-height:100vh;
   display:flex; flex-direction:column; align-items:center;
-  padding:1.5rem 1rem 3rem;
+  padding-bottom:3rem;
 }
-.page-header { text-align:center; border-top:3px solid var(--dark); border-bottom:3px solid var(--dark); padding:1rem 1.5rem; margin-bottom:2rem; width:100%; max-width:520px; }
-.page-header h1 { font-size:1.4rem; letter-spacing:.2em; color:var(--dark); }
-.page-header p { font-size:.82rem; color:var(--muted); letter-spacing:.15em; margin-top:.4rem; }
 
-.stage { width:100%; max-width:520px; display:flex; flex-direction:column; align-items:center; gap:1.5rem; }
-
-.stick-box {
-  width:100%; min-height:220px;
-  background:var(--notebg); border:1px solid var(--rule); border-radius:6px;
-  display:flex; align-items:center; justify-content:center;
-  padding:2rem 1.6rem;
+/* ── Header ── */
+header {
+  width:100%;
+  background:linear-gradient(180deg, var(--maroon) 0%, var(--maroon-deep) 100%);
+  color:var(--gold-light);
   text-align:center;
-  position:relative;
+  padding:2.2rem 1.5rem 1.8rem;
+  border-bottom:6px solid var(--gold);
+  box-shadow:0 3px 10px rgba(0,0,0,.25);
+}
+header h1 {
+  font-size:2.1rem; font-weight:900; letter-spacing:.25em;
+  color:#fdf3d8;
+  text-shadow:0 1px 2px rgba(0,0,0,.4);
+}
+header p {
+  margin-top:.7rem; font-size:1.05rem; letter-spacing:.2em; color:var(--gold-light); opacity:.9;
+}
+
+/* ── Main ── */
+main {
+  width:100%; max-width:560px;
+  padding:2rem 1.3rem 0;
+  display:flex; flex-direction:column; align-items:center;
+  gap:2rem;
+}
+
+.ornament { font-size:1.3rem; color:var(--gold); letter-spacing:1.2em; text-indent:1.2em; }
+
+.card {
+  width:100%; min-height:280px;
+  background:var(--paper);
+  border:3px solid var(--gold);
+  outline:1px solid var(--gold-light);
+  outline-offset:6px;
+  border-radius:10px;
+  padding:2.6rem 1.8rem;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:1.1rem;
   transition:opacity .25s ease;
 }
-.stick-box.hint { color:var(--muted); font-size:.95rem; letter-spacing:.1em; }
-.stick-box .quote {
-  font-size:1.25rem; color:var(--ink); line-height:2; letter-spacing:.05em;
-}
-.stick-box .source {
-  display:block; margin-top:1.1rem; font-size:.82rem; color:var(--muted); letter-spacing:.1em;
-}
-.stick-box.fade { opacity:0; }
+.card.fade { opacity:0; }
 
+.card .hint-text {
+  color:var(--muted); font-size:1.15rem; letter-spacing:.15em; line-height:2.1;
+}
+
+.tag {
+  display:inline-block; background:var(--maroon); color:var(--gold-light);
+  font-size:1rem; letter-spacing:.3em; text-indent:.3em;
+  padding:.35rem 1rem; border-radius:999px; font-family:sans-serif;
+}
+
+.quote {
+  font-size:1.6rem; font-weight:700; color:var(--ink);
+  line-height:2.15; letter-spacing:.06em;
+}
+
+.source {
+  font-size:1.15rem; color:var(--maroon); letter-spacing:.12em;
+}
+
+/* ── Buttons ── */
+.btn-group { width:100%; display:flex; flex-direction:column; align-items:center; gap:1rem; }
 .btn {
-  font-family:inherit; font-size:1.05rem; letter-spacing:.3em;
-  background:var(--red); color:var(--redfg);
-  border:none; border-radius:4px; padding:.85rem 2.2rem;
-  cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.15);
+  width:100%; max-width:340px;
+  font-family:inherit; font-size:1.5rem; font-weight:700; letter-spacing:.5em; text-indent:.5em;
+  background:var(--maroon); color:#fdf3d8;
+  border:2px solid var(--gold);
+  border-radius:10px;
+  padding:1.1rem 1rem;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(0,0,0,.25);
 }
-.btn:active { transform:translateY(1px); }
-.btn.again { background:transparent; color:var(--muted); border:1px solid var(--rule); letter-spacing:.15em; font-size:.9rem; padding:.6rem 1.4rem; }
+.btn:active { transform:translateY(2px); box-shadow:0 1px 4px rgba(0,0,0,.25); }
 
-.footer-note { margin-top:2rem; font-size:.78rem; color:var(--muted); letter-spacing:.08em; text-align:center; }
+.btn-quiet {
+  background:transparent; color:var(--maroon);
+  border:2px solid var(--gold-light);
+  font-size:1.15rem; font-weight:700; letter-spacing:.2em; text-indent:.2em;
+  padding:.75rem 1rem;
+}
+
+footer {
+  margin-top:1rem; padding:0 1.5rem;
+  font-size:1rem; color:var(--muted); letter-spacing:.1em; text-align:center; line-height:1.9;
+}
 </style>
 </head>
 <body>
 
-<div class="page-header">
-  <h1>佛 法 法 語 抽 籤</h1>
-  <p>靜心默念祈願，誠心一抽</p>
-</div>
+<header>
+  <h1>佛 法 法 語</h1>
+  <p>誠 心 抽 籤 ‧ 靜 心 觀 照</p>
+</header>
 
-<div class="stage">
-  <div class="stick-box hint" id="box">合掌靜心片刻，再點下方「抽籤」</div>
-  <button class="btn" id="drawBtn">抽　籤</button>
-</div>
+<main>
+  <div class="ornament">◆ ❖ ◆</div>
 
-<p class="footer-note">法語隨緣而得，僅供靜心參考</p>
+  <div class="card" id="card">
+    <div class="hint-text" id="cardInner">合掌　靜心　默念所求<br>準備好了，請點下方「抽籤」</div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn" id="drawBtn">抽　　籤</button>
+  </div>
+
+  <footer>法語隨緣而得，僅供靜心參考，不作占卜之用</footer>
+</main>
 
 <script>
 const quotes = [
-  ["諸惡莫作，眾善奉行，自淨其意，是諸佛教。", "七佛通戒偈"],
-  ["一切有為法，如夢幻泡影，如露亦如電，應作如是觀。", "《金剛經》"],
-  ["應無所住而生其心。", "《金剛經》"],
-  ["凡所有相，皆是虛妄，若見諸相非相，即見如來。", "《金剛經》"],
-  ["菩提本無樹，明鏡亦非台，本來無一物，何處惹塵埃。", "《六祖壇經》"],
-  ["心平何勞持戒，行直何用參禪。", "《六祖壇經》"],
-  ["色不異空，空不異色，色即是空，空即是色。", "《心經》"],
-  ["不生不滅，不垢不淨，不增不減。", "《心經》"],
-  ["若人欲了知，三世一切佛，應觀法界性，一切唯心造。", "《華嚴經》"],
-  ["一花一世界，一葉一如來。", "禪語"],
-  ["煩惱即菩提。", "禪語"],
-  ["放下屠刀，立地成佛。", "禪語"],
-  ["人身難得，佛法難聞。", "佛門常語"],
-  ["諸法因緣生，諸法因緣滅。", "佛門常語"],
-  ["但行好事，莫問前程。", "禪語"],
-  ["一念嗔心起，百萬障門開。", "《華嚴經》"],
-  ["千江有水千江月，萬里無雲萬里天。", "禪詩"],
-  ["忍辱第一道，佛說無為最。", "佛遺教經"],
-  ["心是根，法是塵，兩種猶如鏡上痕，痕垢盡除光始現，心法雙忘性即真。", "禪語"],
-  ["隨緣不變，不變隨緣。", "佛門常語"],
-  ["有佛法就有辦法。", "星雲大師"],
-  ["給人信心，給人歡喜，給人希望，給人方便。", "星雲大師"],
-  ["慈悲沒有敵人，智慧不起煩惱。", "星雲大師"],
-  ["因上努力，果上隨緣。", "佛門常語"],
-  ["時時勤拂拭，勿使惹塵埃。", "神秀偈"],
-  ["愛出者愛返，福往者福來。", "佛門常語"],
-  ["但願眾生得離苦，不為自己求安樂。", "《華嚴經》"],
-  ["大慈大悲愍眾生，大喜大捨濟含識。", "《千手千眼大悲心陀羅尼》"],
-  ["是日已過，命亦隨減，如少水魚，斯有何樂？大眾當勤精進，如救頭燃，但念無常，慎勿放逸。", "普賢警眾偈"],
-  ["知足常樂，能忍自安。", "佛門常語"]
+  { text:"一切有為法，如夢幻泡影，如露亦如電，應作如是觀。", source:"《金剛經》", tag:"智慧" },
+  { text:"應無所住而生其心。", source:"《金剛經》", tag:"智慧" },
+  { text:"色即是空，空即是色。", source:"《心經》", tag:"智慧" },
+  { text:"不生不滅，不垢不淨，不增不減。", source:"《心經》", tag:"智慧" },
+  { text:"若人欲了知，三世一切佛，應觀法界性，一切唯心造。", source:"《華嚴經》", tag:"智慧" },
+  { text:"千江有水千江月，萬里無雲萬里天。", source:"古德法語", tag:"智慧" },
+  { text:"一花一世界，一葉一如來。", source:"禪語", tag:"智慧" },
+
+  { text:"大慈大悲愍眾生，大喜大捨濟含識。", source:"《大悲心陀羅尼》", tag:"慈悲" },
+  { text:"慈悲沒有敵人，智慧不起煩惱。", source:"星雲大師", tag:"慈悲" },
+  { text:"但願眾生得離苦，不為自己求安樂。", source:"《華嚴經》", tag:"慈悲" },
+  { text:"愛出者愛返，福往者福來。", source:"古德法語", tag:"慈悲" },
+  { text:"未成佛道，先結人緣。", source:"印光大師", tag:"慈悲" },
+
+  { text:"諸法因緣生，諸法因緣滅。", source:"佛門常語", tag:"因果" },
+  { text:"欲知前世因，今生受者是；欲知來世果，今生作者是。", source:"《三世因果經》", tag:"因果" },
+  { text:"因上努力，果上隨緣。", source:"佛門常語", tag:"因果" },
+  { text:"種瓜得瓜，種豆得豆。", source:"古德法語", tag:"因果" },
+
+  { text:"放下屠刀，立地成佛。", source:"禪語", tag:"放下" },
+  { text:"菩提本無樹，明鏡亦非台，本來無一物，何處惹塵埃。", source:"六祖惠能", tag:"放下" },
+  { text:"煩惱即菩提。", source:"禪語", tag:"放下" },
+  { text:"時時勤拂拭，勿使惹塵埃。", source:"神秀禪師", tag:"放下" },
+  { text:"一念放下，萬般自在。", source:"古德法語", tag:"放下" },
+
+  { text:"是日已過，命亦隨減，如少水魚，斯有何樂？大眾當勤精進，如救頭燃，但念無常，慎勿放逸。", source:"普賢警眾偈", tag:"精進" },
+  { text:"修行是點滴功夫，不在一時。", source:"古德法語", tag:"精進" },
+  { text:"人身難得，佛法難聞，此身不向今生度，更向何生度此身。", source:"《勸發菩提心文》", tag:"精進" },
+  { text:"有佛法就有辦法。", source:"星雲大師", tag:"精進" },
+
+  { text:"心平何勞持戒，行直何用參禪。", source:"六祖惠能", tag:"清淨" },
+  { text:"心淨則國土淨。", source:"《維摩詰經》", tag:"清淨" },
+  { text:"心是根，法是塵，兩種猶如鏡上痕，痕垢盡除光始現，心法雙忘性即真。", source:"禪語", tag:"清淨" },
+  { text:"諸惡莫作，眾善奉行，自淨其意，是諸佛教。", source:"七佛通戒偈", tag:"清淨" },
+
+  { text:"凡所有相，皆是虛妄，若見諸相非相，即見如來。", source:"《金剛經》", tag:"無常" },
+  { text:"無常迅速，生死事大。", source:"禪門警語", tag:"無常" },
+  { text:"知足常樂，能忍自安。", source:"佛門常語", tag:"無常" },
+  { text:"忍辱第一道，佛說無為最。", source:"《佛遺教經》", tag:"無常" },
+
+  { text:"給人信心，給人歡喜，給人希望，給人方便。", source:"星雲大師", tag:"感恩" },
+  { text:"但行好事，莫問前程。", source:"古德法語", tag:"感恩" },
+  { text:"一日之所需，百工斯為備，當常思報恩。", source:"印光大師", tag:"感恩" },
+  { text:"隨緣不變，不變隨緣。", source:"佛門常語", tag:"感恩" }
 ];
 
-const box = document.getElementById('box');
+const card = document.getElementById('card');
+const cardInner = document.getElementById('cardInner');
 const btn = document.getElementById('drawBtn');
 
 function draw() {
-  box.classList.add('fade');
-  btn.textContent = '再　抽';
+  card.classList.add('fade');
+  btn.textContent = '再　　抽';
   setTimeout(() => {
-    const [text, source] = quotes[Math.floor(Math.random() * quotes.length)];
-    box.className = 'stick-box';
-    box.innerHTML = '<span class="quote">「' + text + '」</span><span class="source">—— ' + source + '</span>';
+    const q = quotes[Math.floor(Math.random() * quotes.length)];
+    cardInner.innerHTML =
+      '<span class="tag">' + q.tag + '</span>' +
+      '<span class="quote">「' + q.text + '」</span>' +
+      '<span class="source">—— ' + q.source + '</span>';
+    card.classList.remove('fade');
   }, 220);
 }
 

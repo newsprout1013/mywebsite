@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>佛法法語抽籤</title>
+<style>
+:root {
+  --ink:#1a1108; --paper:#faf7f2; --rule:#c8b89a; --dark:#3d2b0e;
+  --red:#8b3a1e; --redfg:#faf7f2; --muted:#6b5740; --notebg:#f0e8d8;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;
+  font-size:18px; line-height:1.9;
+  min-height:100vh;
+  display:flex; flex-direction:column; align-items:center;
+  padding:1.5rem 1rem 3rem;
+}
+.page-header { text-align:center; border-top:3px solid var(--dark); border-bottom:3px solid var(--dark); padding:1rem 1.5rem; margin-bottom:2rem; width:100%; max-width:520px; }
+.page-header h1 { font-size:1.4rem; letter-spacing:.2em; color:var(--dark); }
+.page-header p { font-size:.82rem; color:var(--muted); letter-spacing:.15em; margin-top:.4rem; }
+
+.stage { width:100%; max-width:520px; display:flex; flex-direction:column; align-items:center; gap:1.5rem; }
+
+.stick-box {
+  width:100%; min-height:220px;
+  background:var(--notebg); border:1px solid var(--rule); border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  padding:2rem 1.6rem;
+  text-align:center;
+  position:relative;
+  transition:opacity .25s ease;
+}
+.stick-box.hint { color:var(--muted); font-size:.95rem; letter-spacing:.1em; }
+.stick-box .quote {
+  font-size:1.25rem; color:var(--ink); line-height:2; letter-spacing:.05em;
+}
+.stick-box .source {
+  display:block; margin-top:1.1rem; font-size:.82rem; color:var(--muted); letter-spacing:.1em;
+}
+.stick-box.fade { opacity:0; }
+
+.btn {
+  font-family:inherit; font-size:1.05rem; letter-spacing:.3em;
+  background:var(--red); color:var(--redfg);
+  border:none; border-radius:4px; padding:.85rem 2.2rem;
+  cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.btn:active { transform:translateY(1px); }
+.btn.again { background:transparent; color:var(--muted); border:1px solid var(--rule); letter-spacing:.15em; font-size:.9rem; padding:.6rem 1.4rem; }
+
+.footer-note { margin-top:2rem; font-size:.78rem; color:var(--muted); letter-spacing:.08em; text-align:center; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>佛 法 法 語 抽 籤</h1>
+  <p>靜心默念祈願，誠心一抽</p>
+</div>
+
+<div class="stage">
+  <div class="stick-box hint" id="box">合掌靜心片刻，再點下方「抽籤」</div>
+  <button class="btn" id="drawBtn">抽　籤</button>
+</div>
+
+<p class="footer-note">法語隨緣而得，僅供靜心參考</p>
+
+<script>
+const quotes = [
+  ["諸惡莫作，眾善奉行，自淨其意，是諸佛教。", "七佛通戒偈"],
+  ["一切有為法，如夢幻泡影，如露亦如電，應作如是觀。", "《金剛經》"],
+  ["應無所住而生其心。", "《金剛經》"],
+  ["凡所有相，皆是虛妄，若見諸相非相，即見如來。", "《金剛經》"],
+  ["菩提本無樹，明鏡亦非台，本來無一物，何處惹塵埃。", "《六祖壇經》"],
+  ["心平何勞持戒，行直何用參禪。", "《六祖壇經》"],
+  ["色不異空，空不異色，色即是空，空即是色。", "《心經》"],
+  ["不生不滅，不垢不淨，不增不減。", "《心經》"],
+  ["若人欲了知，三世一切佛，應觀法界性，一切唯心造。", "《華嚴經》"],
+  ["一花一世界，一葉一如來。", "禪語"],
+  ["煩惱即菩提。", "禪語"],
+  ["放下屠刀，立地成佛。", "禪語"],
+  ["人身難得，佛法難聞。", "佛門常語"],
+  ["諸法因緣生，諸法因緣滅。", "佛門常語"],
+  ["但行好事，莫問前程。", "禪語"],
+  ["一念嗔心起，百萬障門開。", "《華嚴經》"],
+  ["千江有水千江月，萬里無雲萬里天。", "禪詩"],
+  ["忍辱第一道，佛說無為最。", "佛遺教經"],
+  ["心是根，法是塵，兩種猶如鏡上痕，痕垢盡除光始現，心法雙忘性即真。", "禪語"],
+  ["隨緣不變，不變隨緣。", "佛門常語"],
+  ["有佛法就有辦法。", "星雲大師"],
+  ["給人信心，給人歡喜，給人希望，給人方便。", "星雲大師"],
+  ["慈悲沒有敵人，智慧不起煩惱。", "星雲大師"],
+  ["因上努力，果上隨緣。", "佛門常語"],
+  ["時時勤拂拭，勿使惹塵埃。", "神秀偈"],
+  ["愛出者愛返，福往者福來。", "佛門常語"],
+  ["但願眾生得離苦，不為自己求安樂。", "《華嚴經》"],
+  ["大慈大悲愍眾生，大喜大捨濟含識。", "《千手千眼大悲心陀羅尼》"],
+  ["是日已過，命亦隨減，如少水魚，斯有何樂？大眾當勤精進，如救頭燃，但念無常，慎勿放逸。", "普賢警眾偈"],
+  ["知足常樂，能忍自安。", "佛門常語"]
+];
+
+const box = document.getElementById('box');
+const btn = document.getElementById('drawBtn');
+
+function draw() {
+  box.classList.add('fade');
+  btn.textContent = '再　抽';
+  setTimeout(() => {
+    const [text, source] = quotes[Math.floor(Math.random() * quotes.length)];
+    box.className = 'stick-box';
+    box.innerHTML = '<span class="quote">「' + text + '」</span><span class="source">—— ' + source + '</span>';
+  }, 220);
+}
+
+btn.addEventListener('click', draw);
+</script>
+
+</body>
+</html>

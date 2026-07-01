@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3d2b18">
+<link rel="manifest" href="choujian-manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>佛法法語抽籤</title>
 <style>
 :root {
-  --maroon:#5c1414; --maroon-deep:#3a0d0d;
+  --bronze:#4a3220; --bronze-deep:#2e1f14;
   --gold:#b8892c; --gold-light:#e9d29b;
   --cream:#fbf3e2; --paper:#fffbf1;
   --ink:#2a1a0e; --muted:#7a6650;
@@ -25,7 +28,7 @@ body {
 /* ── Header ── */
 header {
   width:100%;
-  background:linear-gradient(180deg, var(--maroon) 0%, var(--maroon-deep) 100%);
+  background:linear-gradient(180deg, var(--bronze) 0%, var(--bronze-deep) 100%);
   color:var(--gold-light);
   text-align:center;
   padding:2.2rem 1.5rem 1.8rem;
@@ -70,7 +73,7 @@ main {
 }
 
 .tag {
-  display:inline-block; background:var(--maroon); color:var(--gold-light);
+  display:inline-block; background:var(--bronze); color:var(--gold-light);
   font-size:1rem; letter-spacing:.3em; text-indent:.3em;
   padding:.35rem 1rem; border-radius:999px; font-family:sans-serif;
 }
@@ -81,7 +84,7 @@ main {
 }
 
 .source {
-  font-size:1.15rem; color:var(--maroon); letter-spacing:.12em;
+  font-size:1.15rem; color:var(--bronze); letter-spacing:.12em;
 }
 
 /* ── Buttons ── */
@@ -89,7 +92,7 @@ main {
 .btn {
   width:100%; max-width:340px;
   font-family:inherit; font-size:1.5rem; font-weight:700; letter-spacing:.5em; text-indent:.5em;
-  background:var(--maroon); color:#fdf3d8;
+  background:var(--bronze); color:#fdf3d8;
   border:2px solid var(--gold);
   border-radius:10px;
   padding:1.1rem 1rem;
@@ -99,7 +102,7 @@ main {
 .btn:active { transform:translateY(2px); box-shadow:0 1px 4px rgba(0,0,0,.25); }
 
 .btn-quiet {
-  background:transparent; color:var(--maroon);
+  background:transparent; color:var(--bronze);
   border:2px solid var(--gold-light);
   font-size:1.15rem; font-weight:700; letter-spacing:.2em; text-indent:.2em;
   padding:.75rem 1rem;

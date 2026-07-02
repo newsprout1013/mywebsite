@@ -1,20 +1,22 @@
 {
+  "id": "./choujian.html",
   "name": "佛法法語抽籤",
   "short_name": "法語抽籤",
   "description": "佛法法語隨機抽籤，靜心參考小工具",
   "start_url": "./choujian.html",
+  "scope": "./choujian.html",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#14263f",
   "background_color": "#f7f1e3",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "choujian-icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "choujian-icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

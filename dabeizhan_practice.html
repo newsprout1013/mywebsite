@@ -97,8 +97,8 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 #fs-btns{display:flex;gap:2px;flex-shrink:0;}
 .fs-btn{
   background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
-  color:var(--redfg);font-size:.72rem;font-family:sans-serif;
-  padding:.1rem .35rem;border-radius:2px;cursor:pointer;line-height:1.6;
+  color:var(--redfg);font-size:.88rem;font-family:sans-serif;
+  padding:.3rem .6rem;border-radius:4px;cursor:pointer;line-height:1.5;
 }
 .fs-btn:active{background:rgba(255,255,255,.28);}
 .fs-btn:disabled{opacity:.3;cursor:default;}
@@ -373,7 +373,7 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 
 /* ── 拜懺模式 ── */
 #prostrate-btn{
-  font-size:.62rem;padding:.15rem .45rem;border-radius:2px;
+  font-size:.78rem;padding:.3rem .5rem;border-radius:4px;
   background:rgba(255,255,255,.15);color:rgba(255,255,255,.75);
   font-family:sans-serif;flex-shrink:0;cursor:pointer;
   border:1px solid rgba(255,255,255,.25);
@@ -406,12 +406,44 @@ body.prostrate #slide-area{-webkit-tap-highlight-color:transparent;}
 
 /* wakelock */
 #wl{
-  font-size:.62rem;padding:.15rem .45rem;border-radius:2px;
-  background:rgba(255,255,255,.15);color:rgba(255,255,255,.75);
+  font-size:.78rem;padding:.3rem .5rem;border-radius:4px;
+  background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);
   font-family:sans-serif;flex-shrink:0;cursor:pointer;
   border:1px solid rgba(255,255,255,.25);
   user-select:none;
 }
+
+/* 窄螢幕：頂部欄收斂，保住按鈕大小 */
+@media (max-width:430px){
+  #topbar{padding:0 .55rem;gap:.45rem;}
+  #step-counter{display:none;}
+  #progress-wrap{flex:0 0 36px;}
+}
+
+/* 電腦寬螢幕：內容限寬置中成書頁感 */
+@media (min-width:700px){
+  .slide-inner{max-width:42em;width:100%;margin:0 auto;}
+}
+
+/* ── 續讀確認卡 ── */
+#resume-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;
+  display:none;align-items:center;justify-content:center;padding:1.5rem;
+}
+#resume-overlay.open{display:flex;}
+#resume-card{
+  background:var(--paper);border-radius:10px;padding:1.5rem 1.3rem;
+  max-width:340px;width:100%;text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.3);
+}
+#resume-title{font-size:1.1rem;color:var(--ink);font-weight:700;margin-bottom:.45rem;}
+#resume-sec{font-size:.95rem;color:var(--muted);margin-bottom:1rem;}
+.resume-btn{
+  display:block;width:100%;padding:.85rem;font-size:1.08rem;
+  font-family:inherit;border-radius:8px;cursor:pointer;margin-top:.6rem;
+}
+#resume-yes{background:var(--red);color:var(--redfg);border:none;font-weight:700;letter-spacing:.1em;}
+#resume-no{background:none;border:1px solid var(--rule);color:var(--muted);letter-spacing:.1em;}
 </style>
 </head>
 <body>
@@ -441,6 +473,15 @@ body.prostrate #slide-area{-webkit-tap-highlight-color:transparent;}
 <div id="menu-overlay" onclick="if(event.target===this)closeMenu()">
   <div id="menu-panel">
     <div class="menu-title">跳至儀軌</div>
+  </div>
+</div>
+
+<div id="resume-overlay">
+  <div id="resume-card">
+    <div id="resume-title">要接續上次的進度嗎？</div>
+    <div id="resume-sec"></div>
+    <button class="resume-btn" id="resume-yes" onclick="resumeYes()">接續上次</button>
+    <button class="resume-btn" id="resume-no" onclick="resumeNo()">從頭開始</button>
   </div>
 </div>
 
@@ -889,6 +930,7 @@ function update() {
   document.getElementById('btn-next').disabled = cur === STEPS.length-1;
   document.querySelectorAll('.menu-item').forEach(el =>
     el.classList.toggle('active', +el.dataset.idx === cur));
+  try { localStorage.setItem('dabeizhan-pos', cur); } catch(e) {}
   updateScrollHints();
 }
 
@@ -1037,7 +1079,48 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
+// ── 續讀：init() 會把進度寫回 0，所以要先把上次位置讀出來 ──
+let savedPos = 0;
+try { savedPos = parseInt(localStorage.getItem('dabeizhan-pos') || '0'); } catch(e) {}
+if (isNaN(savedPos) || savedPos < 1 || savedPos >= STEPS.length) savedPos = 0;
+
+function showResume() {
+  if (savedPos <= 0) return;
+  document.getElementById('resume-sec').textContent =
+    '上次讀到：' + STEPS[savedPos].sec + '（' + (savedPos+1) + '/' + STEPS.length + '）';
+  document.getElementById('resume-overlay').classList.add('open');
+}
+function resumeYes() {
+  document.getElementById('resume-overlay').classList.remove('open');
+  jumpTo(savedPos);
+}
+function resumeNo() {
+  document.getElementById('resume-overlay').classList.remove('open');
+  try { localStorage.setItem('dabeizhan-pos', '0'); } catch(e) {}
+}
+
+// ── 鍵盤翻頁（電腦用）──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeMenu(); return; }
+  if (document.getElementById('resume-overlay').classList.contains('open')) return;
+  if (/^(BUTTON|INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter' || e.key === 'PageDown') {
+    e.preventDefault(); smartContinue();
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault(); go(-1);
+  } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    const sc = getScroller(getEl(cur));
+    if (sc) { e.preventDefault(); sc.scrollBy({top:(e.key==='ArrowDown'?1:-1)*160, behavior:'smooth'}); }
+  }
+});
+
+// ── Service Worker：離線可用（自家檔案網路優先，見 sw.js）──
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
 init();
+showResume();
 </script>
 </body>
 </html>

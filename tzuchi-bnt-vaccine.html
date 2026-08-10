@@ -224,15 +224,14 @@
   }
 
   /* ── Tables ── */
-  .table-wrap { overflow-x: auto; margin: 14px 0; border-radius: 10px; border: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 480px; }
+  .table-wrap { margin: 14px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
   thead th {
     background: var(--navy);
     color: #fff;
     text-align: left;
     padding: 10px 12px;
     font-weight: 700;
-    white-space: nowrap;
   }
   tbody td {
     padding: 10px 12px;
@@ -242,6 +241,42 @@
   }
   tbody tr:nth-child(even) { background: #f7f9fb; }
   tbody tr:last-child td { border-bottom: none; }
+
+  /* Mobile: turn tables into stacked cards, no horizontal scrolling */
+  @media (max-width: 640px) {
+    .table-wrap table,
+    .table-wrap thead,
+    .table-wrap tbody,
+    .table-wrap tr {
+      display: block;
+      width: 100%;
+    }
+    .table-wrap thead { display: none; }
+    .table-wrap tr {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .table-wrap tr:last-child { margin-bottom: 0; }
+    .table-wrap tbody tr:nth-child(even) { background: var(--card); }
+    .table-wrap td {
+      display: block;
+      padding: 10px 14px;
+    }
+    .table-wrap td::before {
+      content: attr(data-label);
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--navy);
+      background: var(--blue-bg);
+      padding: 2px 9px;
+      border-radius: 20px;
+      margin-bottom: 6px;
+    }
+  }
 
   /* ── Timeline ── */
   .timeline { list-style: none; padding: 0; }
@@ -299,6 +334,7 @@
     line-height: 1.9;
     font-size: 15.5px;
   }
+  .conclusion-box p { color: #fff; }
   .conclusion-box strong { color: #ffe9a8; }
 
   /* ── Back to top ── */
@@ -397,12 +433,12 @@
           <tr><th>項目</th><th>可確認內容</th><th>重要意義</th></tr>
         </thead>
         <tbody>
-          <tr><td>被詐金額</td><td>約新台幣10.6億元，折合3,000萬美元</td><td>屬於「委任顧問費／服務費」爭議，而非單純疫苗貨款<span class="cite">[145]</span></td></tr>
-          <tr><td>疫苗數量</td><td>慈濟最終取得500萬劑BNT</td><td>疫苗確實到貨並交政府統籌施打<span class="cite">[82][144]</span></td></tr>
-          <tr><td>三方捐購總量</td><td>慈濟、台積電、鴻海／永齡各500萬劑，共1,500萬劑</td><td>民間資源與政府授權、監管程序共同完成<span class="cite">[82][146]</span></td></tr>
-          <tr><td>刑事程序</td><td>17人遭起訴</td><td>起訴不等於定罪，仍須法院判決確定<span class="cite">[146]</span></td></tr>
-          <tr><td>查扣財產</td><td>現金、黃金、豪車、存款及不動產等逾10億元</td><td>有助於日後追徵、沒收與可能發還被害人<span class="cite">[145]</span></td></tr>
-          <tr><td>慈濟立場</td><td>已委任律師、配合審理，保留民事求償權利</td><td>後續能否追回款項取決於司法程序與財產處分結果<span class="cite">[111]</span></td></tr>
+          <tr><td data-label="項目">被詐金額</td><td data-label="可確認內容">約新台幣10.6億元，折合3,000萬美元</td><td data-label="重要意義">屬於「委任顧問費／服務費」爭議，而非單純疫苗貨款<span class="cite">[145]</span></td></tr>
+          <tr><td data-label="項目">疫苗數量</td><td data-label="可確認內容">慈濟最終取得500萬劑BNT</td><td data-label="重要意義">疫苗確實到貨並交政府統籌施打<span class="cite">[82][144]</span></td></tr>
+          <tr><td data-label="項目">三方捐購總量</td><td data-label="可確認內容">慈濟、台積電、鴻海／永齡各500萬劑，共1,500萬劑</td><td data-label="重要意義">民間資源與政府授權、監管程序共同完成<span class="cite">[82][146]</span></td></tr>
+          <tr><td data-label="項目">刑事程序</td><td data-label="可確認內容">17人遭起訴</td><td data-label="重要意義">起訴不等於定罪，仍須法院判決確定<span class="cite">[146]</span></td></tr>
+          <tr><td data-label="項目">查扣財產</td><td data-label="可確認內容">現金、黃金、豪車、存款及不動產等逾10億元</td><td data-label="重要意義">有助於日後追徵、沒收與可能發還被害人<span class="cite">[145]</span></td></tr>
+          <tr><td data-label="項目">慈濟立場</td><td data-label="可確認內容">已委任律師、配合審理，保留民事求償權利</td><td data-label="重要意義">後續能否追回款項取決於司法程序與財產處分結果<span class="cite">[111]</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -512,12 +548,12 @@
           <tr><th>批評面向</th><th>主要質疑</th><th>慈濟目前已公開回應</th></tr>
         </thead>
         <tbody>
-          <tr><td>顧問費規模</td><td>為何支付10.6億元服務費，且不是疫苗本體費用？</td><td>慈濟稱價格與總額依當時公開資訊範圍決行<span class="cite">[144]</span></td></tr>
-          <tr><td>付款條件</td><td>是否在缺乏足夠履約保證前即付款？</td><td>慈濟稱契約有如期、如質、如數及不得追加預算條件<span class="cite">[82]</span></td></tr>
-          <tr><td>身分與能力驗證</td><td>是否核實掮客是否具有原廠授權、代理權或過往實績？</td><td>尚未公開完整徵信、法務審查與交叉查證紀錄<span class="cite">[147]</span></td></tr>
-          <tr><td>內部決策責任</td><td>誰提案、誰審查、誰核准、董事會掌握哪些資料？</td><td>慈濟表示程序經董事會認可，但未完整公開會議與審查細節<span class="cite">[82]</span></td></tr>
-          <tr><td>事後追償</td><td>何時發覺異常？為何多年未見主動提告？</td><td>慈濟稱無調查權，現已委託律師並配合司法<span class="cite">[144][147]</span></td></tr>
-          <tr><td>財報處理</td><td>10.6億元實際列在哪個會計科目？是否認列為損失、應收款或採購成本？</td><td>慈濟僅稱經會計師認證、公開財報並接受查核，科目細節未完整公開<span class="cite">[144][147]</span></td></tr>
+          <tr><td data-label="批評面向">顧問費規模</td><td data-label="主要質疑">為何支付10.6億元服務費，且不是疫苗本體費用？</td><td data-label="慈濟目前已公開回應">慈濟稱價格與總額依當時公開資訊範圍決行<span class="cite">[144]</span></td></tr>
+          <tr><td data-label="批評面向">付款條件</td><td data-label="主要質疑">是否在缺乏足夠履約保證前即付款？</td><td data-label="慈濟目前已公開回應">慈濟稱契約有如期、如質、如數及不得追加預算條件<span class="cite">[82]</span></td></tr>
+          <tr><td data-label="批評面向">身分與能力驗證</td><td data-label="主要質疑">是否核實掮客是否具有原廠授權、代理權或過往實績？</td><td data-label="慈濟目前已公開回應">尚未公開完整徵信、法務審查與交叉查證紀錄<span class="cite">[147]</span></td></tr>
+          <tr><td data-label="批評面向">內部決策責任</td><td data-label="主要質疑">誰提案、誰審查、誰核准、董事會掌握哪些資料？</td><td data-label="慈濟目前已公開回應">慈濟表示程序經董事會認可，但未完整公開會議與審查細節<span class="cite">[82]</span></td></tr>
+          <tr><td data-label="批評面向">事後追償</td><td data-label="主要質疑">何時發覺異常？為何多年未見主動提告？</td><td data-label="慈濟目前已公開回應">慈濟稱無調查權，現已委託律師並配合司法<span class="cite">[144][147]</span></td></tr>
+          <tr><td data-label="批評面向">財報處理</td><td data-label="主要質疑">10.6億元實際列在哪個會計科目？是否認列為損失、應收款或採購成本？</td><td data-label="慈濟目前已公開回應">慈濟僅稱經會計師認證、公開財報並接受查核，科目細節未完整公開<span class="cite">[144][147]</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -580,13 +616,13 @@
           <tr><th>議題</th><th>正面／慈濟或支持者論點</th><th>反面／批評者論點</th><th>較穩健的判讀</th></tr>
         </thead>
         <tbody>
-          <tr><td>慈濟是否有貢獻</td><td>最終捐贈500萬劑BNT，確實協助防疫</td><td>有貢獻不表示顧問費決策可免檢討</td><td>兩者可同時成立</td></tr>
-          <tr><td>10.6億元性質</td><td>是疫苗採購過程中的委任服務費</td><td>檢方指稱該費用是虛構採購能力下詐得的款項</td><td>應明確區分「疫苗貨款」與「顧問費」<span class="cite">[145]</span></td></tr>
-          <tr><td>慈濟是否為受害者</td><td>被不實話術誘騙付款，屬刑案被害人</td><td>受害法人仍可能有內控與受託責任問題</td><td>刑事被害與治理責任不互斥</td></tr>
-          <tr><td>最終取得疫苗的原因</td><td>慈濟的出資、投入與合作促成救援</td><td>實際疫苗採購是政府授權下的三方架構，掮客未必有功</td><td>需區分慈濟貢獻與掮客角色<span class="cite">[146]</span></td></tr>
-          <tr><td>董事會與會計師查核</td><td>顯示採購非個人擅斷、帳務有外部檢視</td><td>不等於商業判斷、風險評估與付款條件必然合理</td><td>應公開審查材料和決策依據<span class="cite">[110]</span></td></tr>
-          <tr><td>未即時提告問題</td><td>慈濟沒有調查權，現已透過司法追償</td><td>報案、告發不需要先具備調查權；為何多年未主動追究仍待說明</td><td>慈濟應公布發覺異常與處置時間線<span class="cite">[147]</span></td></tr>
-          <tr><td>政府是否擋疫苗</td><td>政府把關防詐、原廠傾向與政府合作</td><td>政府採購與民間協作是否不足或延宕，仍須檢討</td><td>不可用單一刑案取代整體政策評估</td></tr>
+          <tr><td data-label="議題">慈濟是否有貢獻</td><td data-label="正面／慈濟或支持者論點">最終捐贈500萬劑BNT，確實協助防疫</td><td data-label="反面／批評者論點">有貢獻不表示顧問費決策可免檢討</td><td data-label="較穩健的判讀">兩者可同時成立</td></tr>
+          <tr><td data-label="議題">10.6億元性質</td><td data-label="正面／慈濟或支持者論點">是疫苗採購過程中的委任服務費</td><td data-label="反面／批評者論點">檢方指稱該費用是虛構採購能力下詐得的款項</td><td data-label="較穩健的判讀">應明確區分「疫苗貨款」與「顧問費」<span class="cite">[145]</span></td></tr>
+          <tr><td data-label="議題">慈濟是否為受害者</td><td data-label="正面／慈濟或支持者論點">被不實話術誘騙付款，屬刑案被害人</td><td data-label="反面／批評者論點">受害法人仍可能有內控與受託責任問題</td><td data-label="較穩健的判讀">刑事被害與治理責任不互斥</td></tr>
+          <tr><td data-label="議題">最終取得疫苗的原因</td><td data-label="正面／慈濟或支持者論點">慈濟的出資、投入與合作促成救援</td><td data-label="反面／批評者論點">實際疫苗採購是政府授權下的三方架構，掮客未必有功</td><td data-label="較穩健的判讀">需區分慈濟貢獻與掮客角色<span class="cite">[146]</span></td></tr>
+          <tr><td data-label="議題">董事會與會計師查核</td><td data-label="正面／慈濟或支持者論點">顯示採購非個人擅斷、帳務有外部檢視</td><td data-label="反面／批評者論點">不等於商業判斷、風險評估與付款條件必然合理</td><td data-label="較穩健的判讀">應公開審查材料和決策依據<span class="cite">[110]</span></td></tr>
+          <tr><td data-label="議題">未即時提告問題</td><td data-label="正面／慈濟或支持者論點">慈濟沒有調查權，現已透過司法追償</td><td data-label="反面／批評者論點">報案、告發不需要先具備調查權；為何多年未主動追究仍待說明</td><td data-label="較穩健的判讀">慈濟應公布發覺異常與處置時間線<span class="cite">[147]</span></td></tr>
+          <tr><td data-label="議題">政府是否擋疫苗</td><td data-label="正面／慈濟或支持者論點">政府把關防詐、原廠傾向與政府合作</td><td data-label="反面／批評者論點">政府採購與民間協作是否不足或延宕，仍須檢討</td><td data-label="較穩健的判讀">不可用單一刑案取代整體政策評估</td></tr>
         </tbody>
       </table>
     </div>

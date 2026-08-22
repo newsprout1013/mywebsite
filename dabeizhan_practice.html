@@ -89,19 +89,18 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
   background:var(--dark);color:var(--redfg);
   display:flex;align-items:center;padding:0 1rem;gap:.75rem;z-index:100;
 }
-#section-label{font-size:.85rem;letter-spacing:.12em;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-#progress-wrap{flex:0 0 80px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;}
-#progress-bar{height:100%;background:var(--redfg);border-radius:2px;transition:width .3s;}
-#menu-btn{background:none;border:none;color:var(--redfg);font-size:1.3rem;cursor:pointer;padding:.25rem;flex-shrink:0;}
-#step-counter{font-size:.72rem;opacity:.7;flex-shrink:0;}
-#fs-btns{display:flex;gap:2px;flex-shrink:0;}
-.fs-btn{
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
-  color:var(--redfg);font-size:.88rem;font-family:sans-serif;
-  padding:.3rem .6rem;border-radius:4px;cursor:pointer;line-height:1.5;
+#section-label{font-size:.95rem;letter-spacing:.06em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#progress-wrap{flex:0 0 64px;height:5px;background:rgba(255,255,255,.2);border-radius:3px;}
+#progress-bar{height:100%;background:var(--redfg);border-radius:3px;transition:width .3s;}
+#menu-btn{
+  background:none;border:none;color:var(--redfg);font-size:1.45rem;
+  cursor:pointer;flex-shrink:0;
+  width:44px;height:44px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:6px;
 }
-.fs-btn:active{background:rgba(255,255,255,.28);}
-.fs-btn:disabled{opacity:.3;cursor:default;}
+#menu-btn:active{background:rgba(255,255,255,.18);}
+#step-counter{font-size:.82rem;opacity:.75;flex-shrink:0;font-family:sans-serif;}
 
 /* ── SLIDE AREA ── */
 #slide-area{
@@ -311,15 +310,6 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 .vc{color:var(--muted);flex:0 0 6.5em;}
 .vr{color:var(--ink);}
 
-/* ── TAP HINT ── */
-.tap-hint{
-  flex-shrink:0;
-  text-align:center;font-size:.78rem;color:var(--muted);
-  letter-spacing:.1em;padding:.45rem 0;
-  border-top:1px solid var(--rule);
-  background:var(--paper);
-}
-
 /* ── SCROLL-MORE HINT (下方還有經文) ── */
 .scroll-more{
   position:absolute;left:0;right:0;
@@ -350,7 +340,6 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 
 /* 讀到底 / 短頁面 → 「繼續」變醒目，明確告訴使用者「這頁可以走了」 */
 #center-tap.ready{color:var(--red);font-weight:700;}
-.slide.read-done .tap-hint{color:var(--red);font-weight:700;}
 
 /* ── BOTTOM NAV ── */
 #bottomnav{
@@ -371,15 +360,29 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 }
 #center-tap:active,#btn-prev:active,#btn-next:active{background:var(--notebg);}
 
-/* ── 拜懺模式 ── */
-#prostrate-btn{
-  font-size:.78rem;padding:.3rem .5rem;border-radius:4px;
-  background:rgba(255,255,255,.15);color:rgba(255,255,255,.75);
-  font-family:sans-serif;flex-shrink:0;cursor:pointer;
-  border:1px solid rgba(255,255,255,.25);
-  user-select:none;
+/* ── 選單內的設定區（觸控目標一律 ≥48px 高，長輩好按）── */
+.menu-settings{padding:.5rem .9rem 1rem;border-bottom:1px solid var(--rule);margin-bottom:.4rem;}
+.set-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem;}
+.set-label{
+  font-size:.82rem;color:var(--muted);letter-spacing:.1em;
+  font-family:sans-serif;flex:0 0 3.2em;
 }
-#prostrate-btn.on{background:rgba(255,180,60,.35);color:#fff;border-color:rgba(255,180,60,.6);}
+.set-btn{
+  flex:1;min-height:48px;
+  display:flex;align-items:center;justify-content:center;gap:.35rem;
+  background:var(--notebg);border:1px solid var(--rule);border-radius:8px;
+  color:var(--ink);font-size:1rem;font-family:inherit;
+  cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.set-btn:active{background:var(--rule);}
+.set-btn:disabled{opacity:.35;cursor:default;}
+.set-btn.wide{width:100%;flex-direction:column;gap:.1rem;padding:.5rem;}
+.set-btn-sub{font-size:.74rem;color:var(--muted);letter-spacing:.05em;font-family:sans-serif;}
+.set-btn.on{background:#f3e2c0;border-color:#c79a4a;color:#5a3a08;font-weight:700;}
+.set-btn.on .set-btn-sub{color:#7a5a20;}
+.fs-btn{font-family:sans-serif;font-size:1.15rem;}
+
+/* ── 拜懺模式 ── */
 body.prostrate #slide-area{-webkit-tap-highlight-color:transparent;}
 
 /* ── MENU ── */
@@ -394,30 +397,32 @@ body.prostrate #slide-area{-webkit-tap-highlight-color:transparent;}
 }
 .menu-title{font-size:.78rem;color:var(--muted);letter-spacing:.15em;padding:.5rem 1.2rem;border-bottom:1px solid var(--rule);margin-bottom:.4rem;}
 .menu-item{
-  display:block;width:100%;text-align:left;background:none;border:none;
-  padding:.7rem 1.2rem;font-size:var(--fs-menu);font-family:inherit;color:var(--ink);
+  display:flex;align-items:center;gap:.5rem;
+  width:100%;min-height:48px;text-align:left;background:none;border:none;
+  padding:.6rem 1.2rem;font-size:var(--fs-menu);font-family:inherit;color:var(--ink);
   cursor:pointer;border-bottom:1px solid var(--notebg);letter-spacing:.05em;
 }
 .menu-item:active,.menu-item.active{background:var(--notebg);}
+.menu-item.active{font-weight:700;color:var(--red);}
 .menu-num{
+  flex-shrink:0;
   display:inline-block;background:var(--dark);color:var(--redfg);
-  font-size:.68rem;padding:.08rem .35rem;border-radius:2px;margin-right:.5rem;font-family:sans-serif;
+  font-size:.72rem;min-width:1.8em;text-align:center;
+  padding:.12rem .35rem;border-radius:3px;font-family:sans-serif;
+}
+.menu-label{flex:1;min-width:0;}
+.menu-pages{
+  flex-shrink:0;font-size:.7rem;color:var(--muted);
+  font-family:sans-serif;letter-spacing:0;opacity:.75;
 }
 
-/* wakelock */
-#wl{
-  font-size:.78rem;padding:.3rem .5rem;border-radius:4px;
-  background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);
-  font-family:sans-serif;flex-shrink:0;cursor:pointer;
-  border:1px solid rgba(255,255,255,.25);
-  user-select:none;
-}
-
-/* 窄螢幕：頂部欄收斂，保住按鈕大小 */
+/* 窄螢幕：頂部欄收斂，但步數與進度條一律保留（「我在哪」是最重要的資訊）*/
 @media (max-width:430px){
-  #topbar{padding:0 .55rem;gap:.45rem;}
-  #step-counter{display:none;}
-  #progress-wrap{flex:0 0 36px;}
+  #topbar{padding:0 .5rem 0 .15rem;gap:.5rem;}
+  #progress-wrap{flex:0 0 48px;}
+}
+@media (max-width:340px){
+  #progress-wrap{display:none;}
 }
 
 /* 電腦寬螢幕：內容限寬置中成書頁感 */
@@ -449,16 +454,10 @@ body.prostrate #slide-area{-webkit-tap-highlight-color:transparent;}
 <body>
 
 <div id="topbar">
-  <button id="menu-btn" onclick="toggleMenu()">☰</button>
+  <button id="menu-btn" onclick="toggleMenu()" aria-label="開啟選單與設定">☰</button>
   <span id="section-label"></span>
   <span id="step-counter"></span>
   <div id="progress-wrap"><div id="progress-bar"></div></div>
-  <div id="fs-btns">
-    <button class="fs-btn" onclick="setFs(-1)" id="fs-down">A⁻</button>
-    <button class="fs-btn" onclick="setFs(1)"  id="fs-up">A⁺</button>
-  </div>
-  <span id="prostrate-btn" onclick="toggleProstrate()" title="拜懺模式：點任意處翻頁">🙏 拜懺</span>
-  <span id="wl" onclick="toggleWakeLock()" title="點擊切換螢幕常亮">💡</span>
 </div>
 
 <div id="slide-area"></div>
@@ -472,6 +471,22 @@ body.prostrate #slide-area{-webkit-tap-highlight-color:transparent;}
 
 <div id="menu-overlay" onclick="if(event.target===this)closeMenu()">
   <div id="menu-panel">
+    <div class="menu-settings">
+      <div class="menu-title" style="padding:.5rem 0;border:none;">設定</div>
+      <div class="set-row">
+        <span class="set-label">字級</span>
+        <button class="set-btn fs-btn" onclick="setFs(-1)" id="fs-down" aria-label="縮小字級">A⁻</button>
+        <button class="set-btn fs-btn" onclick="setFs(1)"  id="fs-up"  aria-label="放大字級">A⁺</button>
+      </div>
+      <button class="set-btn wide" id="prostrate-btn" onclick="toggleProstrate()">
+        <span id="prostrate-main">🙏 拜懺模式</span>
+        <span class="set-btn-sub" id="prostrate-sub">關閉中・點下方按鈕翻頁</span>
+      </button>
+      <button class="set-btn wide" id="wl" onclick="toggleWakeLock()" style="margin-top:.55rem;">
+        <span id="wl-main">💡 螢幕常亮</span>
+        <span class="set-btn-sub" id="wl-sub">偵測中…</span>
+      </button>
+    </div>
     <div class="menu-title">跳至儀軌</div>
   </div>
 </div>
@@ -799,8 +814,7 @@ function makeSlide(i) {
         <div class="cover-bottom-ornament">
           <div class="cover-bottom-line"></div>
         </div>
-      </div>
-      <div class="tap-hint">進入儀軌 ›</div>`;
+      </div>`;
     return d;
   }
 
@@ -826,8 +840,7 @@ function makeSlide(i) {
     <div class="slide-inner">
       <div class="slide-sec">${s.sec}</div>
       ${s.body}
-    </div>
-    <div class="tap-hint">繼續 ›</div>` + SCROLL_MORE_HTML;
+    </div>` + SCROLL_MORE_HTML;
   attachScroller(d);
   return d;
 }
@@ -888,7 +901,7 @@ function updateScrollHints() {
   const ct = document.getElementById('center-tap');
 
   if (!sc) { // 封面等無捲動內容的頁面
-    slide.classList.remove('has-more','read-done');
+    slide.classList.remove('has-more');
     pp.style.display = 'none';
     if (ct) { ct.innerHTML = '進入儀軌 ›'; ct.classList.add('ready'); }
     return;
@@ -898,7 +911,6 @@ function updateScrollHints() {
   const atBottom = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 6;
 
   slide.classList.toggle('has-more', scrollable && !atBottom);
-  slide.classList.toggle('read-done', scrollable && atBottom);
 
   if (more) {
     const sb = slide.getBoundingClientRect();
@@ -936,15 +948,26 @@ function update() {
 
 function buildMenu() {
   const panel = document.getElementById('menu-panel');
-  const seen = new Set();
+  const first = new Map();   // 科名 → 起始索引
+  const count = new Map();   // 科名 → 頁數
   STEPS.forEach((s,i) => {
-    if (seen.has(s.sec)) return;
-    seen.add(s.sec);
+    if (!first.has(s.sec)) first.set(s.sec, i);
+    count.set(s.sec, (count.get(s.sec) || 0) + 1);
+  });
+
+  first.forEach((i, sec) => {
     const b = document.createElement('button');
     b.className = 'menu-item';
     b.dataset.idx = i;
-    const [num,...rest] = s.sec.split('　');
-    b.innerHTML = `<span class="menu-num">${num}</span>${rest.join('　')||s.sec}`;
+    // 「四　修供養」→ 編號徽章 + 科名；沒有全形空白的科名（旋繞、Q&A…）直接顯示，
+    // 不套徽章，否則同一組字會在徽章與標籤各印一次
+    const parts = sec.split('　');
+    const label = parts.length > 1
+      ? `<span class="menu-num">${parts[0]}</span><span class="menu-label">${parts.slice(1).join('　')}</span>`
+      : `<span class="menu-label">${sec}</span>`;
+    const last = i + count.get(sec);
+    b.innerHTML = label +
+      `<span class="menu-pages">${i+1}${last > i+1 ? '–'+last : ''}</span>`;
     b.onclick = () => { jumpTo(i); closeMenu(); };
     panel.appendChild(b);
   });
@@ -983,7 +1006,10 @@ try { prostrateMode = localStorage.getItem('dabeizhan-prostrate') === '1'; } cat
 function applyProstrate() {
   const btn = document.getElementById('prostrate-btn');
   btn.classList.toggle('on', prostrateMode);
-  btn.textContent = prostrateMode ? '🙏 拜懺中' : '🙏 拜懺';
+  document.getElementById('prostrate-main').textContent =
+    prostrateMode ? '🙏 拜懺模式（開啟中）' : '🙏 拜懺模式';
+  document.getElementById('prostrate-sub').textContent =
+    prostrateMode ? '點畫面任意處即可翻頁' : '關閉中・用下方按鈕翻頁';
   document.body.classList.toggle('prostrate', prostrateMode);
 }
 
@@ -1025,11 +1051,25 @@ applyFs();
 let wakeLockSentinel = null;
 const wlBtn = document.getElementById('wl');
 
+const wlMain = document.getElementById('wl-main');
+const wlSub  = document.getElementById('wl-sub');
+
 function setWlStatus(state) {
-  if (state === 'on')      { wlBtn.textContent = '💡 常亮中'; wlBtn.style.background = 'rgba(255,220,100,.25)'; }
-  else if (state === 'off'){ wlBtn.textContent = '💡 常亮'; wlBtn.style.background = 'rgba(255,255,255,.15)'; }
-  else if (state === 'err'){ wlBtn.textContent = '💡 需HTTPS'; wlBtn.style.background = 'rgba(255,100,100,.25)'; wlBtn.title = '螢幕常亮需在 HTTPS 網頁開啟（如 GitHub Pages），直接開啟 html 檔案不支援'; }
-  else if (state === 'no') { wlBtn.textContent = '💡 不支援'; wlBtn.style.background = 'rgba(150,150,150,.25)'; wlBtn.title = '此瀏覽器不支援螢幕常亮功能'; }
+  wlBtn.classList.toggle('on', state === 'on');
+  wlBtn.disabled = (state === 'err' || state === 'no');
+  if (state === 'on') {
+    wlMain.textContent = '💡 螢幕常亮（開啟中）';
+    wlSub.textContent  = '拜懺時螢幕不會自動關閉';
+  } else if (state === 'off') {
+    wlMain.textContent = '💡 螢幕常亮';
+    wlSub.textContent  = '關閉中・螢幕會依系統設定自動關閉';
+  } else if (state === 'err') {
+    wlMain.textContent = '💡 螢幕常亮';
+    wlSub.textContent  = '需用網址開啟才支援（直接開檔案不支援）';
+  } else if (state === 'no') {
+    wlMain.textContent = '💡 螢幕常亮';
+    wlSub.textContent  = '此瀏覽器不支援';
+  }
 }
 
 async function requestWakeLock() {

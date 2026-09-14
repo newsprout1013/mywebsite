@@ -21,7 +21,10 @@
   --fs-xs: .72rem;
   --fs-chant: 1rem;
   --fs-menu: .95rem;
-  --lh: 2.2;
+  /* 行高：所有字級共用一個值，不隨字級遞增。
+     懺文是一句一行的手工排版，行高過大會讓每句之間看起來像空了一行；
+     且字放大後絕對行距本來就跟著變大，倍數再遞增會更誇張。*/
+  --lh: 1.8;
 }
 body.fs-s {
   --fs: 0.9rem;
@@ -29,7 +32,6 @@ body.fs-s {
   --fs-xs: .65rem;
   --fs-chant: 0.88rem;
   --fs-menu: 0.85rem;
-  --lh: 2.1;
 }
 body.fs-large {
   --fs: 1.25rem;
@@ -37,7 +39,6 @@ body.fs-large {
   --fs-xs: .84rem;
   --fs-chant: 1.18rem;
   --fs-menu: 1.1rem;
-  --lh: 2.3;
 }
 body.fs-xlarge {
   --fs: 1.48rem;
@@ -45,7 +46,6 @@ body.fs-xlarge {
   --fs-xs: .95rem;
   --fs-chant: 1.38rem;
   --fs-menu: 1.25rem;
-  --lh: 2.4;
 }
 body.fs-xxlarge {
   --fs: 1.72rem;
@@ -53,7 +53,6 @@ body.fs-xxlarge {
   --fs-xs: 1.05rem;
   --fs-chant: 1.58rem;
   --fs-menu: 1.42rem;
-  --lh: 2.5;
 }
 body.fs-3xl {
   --fs: 2.0rem;
@@ -61,7 +60,6 @@ body.fs-3xl {
   --fs-xs: 1.2rem;
   --fs-chant: 1.82rem;
   --fs-menu: 1.6rem;
-  --lh: 2.6;
 }
 body.fs-4xl {
   --fs: 2.3rem;
@@ -69,7 +67,6 @@ body.fs-4xl {
   --fs-xs: 1.38rem;
   --fs-chant: 2.1rem;
   --fs-menu: 1.82rem;
-  --lh: 2.7;
 }
 body.fs-5xl {
   --fs: 2.6rem;
@@ -77,7 +74,6 @@ body.fs-5xl {
   --fs-xs: 1.55rem;
   --fs-chant: 2.38rem;
   --fs-menu: 2.05rem;
-  --lh: 2.8;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;background:var(--paper);}
@@ -311,7 +307,7 @@ body{font-family:"Noto Serif TC","Source Han Serif TC","宋體",Georgia,serif;co
 
 /* ── VERSE ── */
 .verse{margin:.3rem 0 .3rem 0;}
-.vrow{display:flex;gap:.8rem;line-height:2.1;font-size:var(--fs);}
+.vrow{display:flex;gap:.8rem;line-height:var(--lh);font-size:var(--fs);}
 .vc{color:var(--muted);flex:0 0 6.5em;}
 .vr{color:var(--ink);}
 
